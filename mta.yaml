@@ -68,9 +68,23 @@ modules:
       - book.zip
       name: book
       target-path: resources/
+    - artifacts:
+      - motocyclefiori.zip
+      name: motocyclefiori
+      target-path: resources/
 - name: book
   type: html5
   path: app/book
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: motocyclefiori
+  type: html5
+  path: app/motocycle_fiori
   build-parameters:
     build-result: dist
     builder: custom
