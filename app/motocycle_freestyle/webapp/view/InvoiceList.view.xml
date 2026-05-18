@@ -8,12 +8,15 @@
       id="invoiceList"
       width="auto"
       items="{
-         path : '/Motocycle'
+         path : 'motocycleModel>/ADVMotocycle'
       }">
       <headerToolbar>
          <Toolbar>
             <Title text="{i18n>invoiceListTitle}"/>
             <ToolbarSpacer/>
+            <Button
+               text="{i18n>addMotocycleButtonText}"
+               press=".onAddMotocycle"/>
             <SearchField 
                width="50%" 
                search=".onFilterInvoices"/>
@@ -24,10 +27,10 @@
             core:require="{
                   Currency: 'sap/ui/model/type/Currency'
                }"
-            title="{name} - {farbe}"
+            title="{motocycleModel>name} - {motocycleModel>farbe}"
             number="{
                   parts: [
-                     'hubraum',
+                     'motocycleModel>hubraum',
                      'view>/currency'
                  ],
                  type: 'Currency',
@@ -36,11 +39,11 @@
                }
             }"
             numberUnit="{view>/currency}"
-            numberState="{= ${hubraum} > 1000 ? 'Error' : 'Success' }">
+            numberState="{= ${motocycleModel>hubraum} > 1000 ? 'Error' : 'Success' }">
                <firstStatus>
                     <ObjectStatus
                         text="{
-                            path: 'farbe',
+                            path: 'motocycleModel>farbe',
                             formatter: '.statusText'
                         }"/>
                 </firstStatus>

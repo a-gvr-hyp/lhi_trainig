@@ -12,6 +12,7 @@ sap.ui.define([
 				currency: "EUR"
 			});
 			this.getView().setModel(oViewModel, "view");
+			this.getMotocycle();
 		},
 
 		statusText(sStatus) {
@@ -40,6 +41,41 @@ sap.ui.define([
 			const oList = this.byId("invoiceList");
 			const oBinding = oList.getBinding("items");
 			oBinding.filter(aFilter);
+		},
+
+		getMotocycle() {
+			const oModel = this.getOwnerComponent().getModel("modelV2");
+			oModel.read("/Motocycle", {
+				success: (oData) => {
+					const oMotocycleModel = this.getOwnerComponent().getModel("motocycleModel");
+					oMotocycleModel.setProperty("/Motocycle", oData.results);
+					oMotocycleModel.setProperty("/ADVMotocycle", oData.results.filter((moto) => moto.typ === "ADV"));
+				},
+				error: (oError) => {
+					console.error("Error fetching motocycle data", oError);
+				}
+			});
+		},
+
+		onAddMotocycle() {
+			const oNewMotocycle = {
+				company_ID: "62537d2e-f45e-4815-b5e1-243a1b3c042a",
+				farbe: "Blau",
+				hubraum: 800,
+				name: "GSA-800",
+				typ: "ADV"
+			};
+			const oModel = this.getOwnerComponent().getModel("modelV2");
+			oModel.create("/Motocycle", oNewMotocycle, {
+				success: (oData) => {
+					this.getMotocycle();
+					sap.m.MessageToast.show("Motocycle added successfully");
+				},
+				error: (oError) => {
+					console.error("Error fetching motocycle data", oError);
+				}
+			});
 		}
+
 	});
 });

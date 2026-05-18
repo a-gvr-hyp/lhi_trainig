@@ -23,6 +23,14 @@
           "annotations": [],
           "odataVersion": "4.0"
         }
+      },
+      "mainServiceV2": {
+        "uri": "/odata/v2/motocycle/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "2.0"
+        }
       }
     },
     "crossNavigation": {
@@ -84,9 +92,16 @@
           "earlyRequests": true
         }
       },
+      "modelV2": {
+        "dataSource": "mainServiceV2",
+        "preload": true
+      },
       "invoiceModel": {
         "type": "sap.ui.model.json.JSONModel",
         "uri": "Invoices.json"
+      },
+      "motocycleModel": {
+        "type": "sap.ui.model.json.JSONModel"
       }
     },
     "resources": {
