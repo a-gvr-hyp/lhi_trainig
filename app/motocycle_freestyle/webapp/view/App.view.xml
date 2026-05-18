@@ -1,0 +1,20 @@
+<mvc:View
+	controllerName="motocyclefreestyle.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    displayBlock="true">
+    <Shell>
+      <App class="myAppDemoWT">
+        <pages>
+          <Page title="{i18n>homePageTitle}">
+            <content>
+              <mvc:XMLView id="xmlViewHelloPanel" viewName="motocyclefreestyle.view.HelloPanel"/>
+              <mvc:XMLView viewName="motocyclefreestyle.view.InvoiceList"/>
+            </content>
+          </Page>
+        </pages>
+      </App>
+    </Shell>
+</mvc:View>

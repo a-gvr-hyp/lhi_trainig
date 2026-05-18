@@ -20,7 +20,8 @@
     "undeploy": "cf undeploy trainig --delete-services --delete-service-keys --delete-service-brokers",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
-    "watch-motocycle_fiori": "cds watch --open motocyclefiori/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-motocycle_fiori": "cds watch --open motocyclefiori/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-motocycle_freestyle": "cds watch --open motocyclefreestyle/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "cds": {},
