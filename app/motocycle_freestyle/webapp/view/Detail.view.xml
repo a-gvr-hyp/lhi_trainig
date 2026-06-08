@@ -1,0 +1,51 @@
+<mvc:View
+	controllerName="motocyclefreestyle.controller.Detail"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc">
+	<Page
+		id="detailPage"
+		backgroundDesign="Solid"
+		title="{i18n>detailPageTitle}"
+		showNavButton="true"
+		navButtonPress=".onNavBack">
+		<footer>
+			<Toolbar>
+				<ToolbarSpacer/>
+				<Button
+					text="{i18n>editButtonText}"
+					type="Emphasized"
+					press=".onEditPress" />
+			</Toolbar>
+		</footer>
+		<content>
+			<ObjectHeader
+				title="{detailModel>/name}"
+				titleLevel="H3"
+				number="{
+					parts: [
+						'detailModel>/hubraum'
+					],
+					type: 'Currency',
+					formatOptions: {
+						showMeasure: false
+					}
+				}"
+				numberUnit="{view>/currency}">
+				<attributes>
+					<ObjectAttribute
+						title="{i18n>motocycleFarbe}"
+						text="{detailModel>/farbe}"/>
+					<ObjectAttribute
+						title="{i18n>motocycleHubraum}"
+						text="{detailModel>/hubraum}"/>
+					<ObjectAttribute
+						title="{i18n>motocycleTyp}"
+						text="{detailModel>/typ}"/>
+					<ObjectAttribute
+						title="{i18n>motocycleID}"
+						text="{detailModel>/ID}"/>
+					</attributes>
+			</ObjectHeader>
+		</content>
+	</Page>
+</mvc:View>

@@ -24,6 +24,14 @@ sap.ui.define([
 			};
 			const oModel = new JSONModel(oData);
 			this.setModel(oModel, "initModel");
+
+            const oViewModel = new JSONModel({
+				currency: "EUR"
+			});
+			this.setModel(oViewModel, "view");
+
+            // create the views based on the url/hash
+            this.getRouter().initialize();
         }
     });
 });

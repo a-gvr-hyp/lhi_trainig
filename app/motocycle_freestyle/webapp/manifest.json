@@ -130,19 +130,41 @@
           "target": [
             "TargetApp"
           ]
+        },
+        {
+          "name": "Detail",
+          "pattern": "detail/{motocycleId}",
+          "target": [
+            "Detail"
+          ]
+        },
+        {
+          "name": "Create",
+          "pattern": "create",
+          "target": [
+            "Create"
+          ]
         }
       ],
       "targets": {
         "TargetApp": {
           "id": "App",
           "name": "App"
+        },
+        "Detail": {
+          "id": "Detail",
+          "name": "Detail"
+        },
+        "Create": {
+          "id": "Create",
+          "name": "Create"
         }
       }
     },
     "rootView": {
       "viewName": "motocyclefreestyle.view.App",
       "type": "XML",
-      "id": "App",
+      "id": "app",
       "async": true
     }
   },

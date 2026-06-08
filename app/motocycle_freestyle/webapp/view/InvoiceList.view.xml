@@ -39,7 +39,9 @@
                }
             }"
             numberUnit="{view>/currency}"
-            numberState="{= ${motocycleModel>hubraum} > 1000 ? 'Error' : 'Success' }">
+            numberState="{= ${motocycleModel>hubraum} > 1000 ? 'Error' : 'Success' }"
+            type="Navigation"
+            press=".onPress">
                <firstStatus>
                     <ObjectStatus
                         text="{

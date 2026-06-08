@@ -2,16 +2,13 @@ sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/model/Filter",
-	"sap/ui/model/FilterOperator"
-], (Controller, JSONModel, Filter, FilterOperator) => {
+	"sap/ui/model/FilterOperator",
+	"sap/ui/core/UIComponent"
+], (Controller, JSONModel, Filter, FilterOperator, UIComponent) => {
 	"use strict";
 
-	return Controller.extend("ui5.walkthrough.controller.InvoiceList", {
+	return Controller.extend("motocyclefreestyle.controller.InvoiceList", {
 		onInit() {
-			const oViewModel = new JSONModel({
-				currency: "EUR"
-			});
-			this.getView().setModel(oViewModel, "view");
 			this.getMotocycle();
 		},
 
@@ -58,22 +55,32 @@ sap.ui.define([
 		},
 
 		onAddMotocycle() {
-			const oNewMotocycle = {
-				company_ID: "62537d2e-f45e-4815-b5e1-243a1b3c042a",
-				farbe: "Blau",
-				hubraum: 800,
-				name: "GSA-800",
-				typ: "ADV"
-			};
-			const oModel = this.getOwnerComponent().getModel("modelV2");
-			oModel.create("/Motocycle", oNewMotocycle, {
-				success: (oData) => {
-					this.getMotocycle();
-					sap.m.MessageToast.show("Motocycle added successfully");
-				},
-				error: (oError) => {
-					console.error("Error fetching motocycle data", oError);
-				}
+			// const oNewMotocycle = {
+			// 	company_ID: "62537d2e-f45e-4815-b5e1-243a1b3c042a",
+			// 	farbe: "Blau",
+			// 	hubraum: 800,
+			// 	name: "GSA-800",
+			// 	typ: "ADV"
+			// };
+			// const oModel = this.getOwnerComponent().getModel("modelV2");
+			// oModel.create("/Motocycle", oNewMotocycle, {
+			// 	success: (oData) => {
+			// 		this.getMotocycle();
+			// 		sap.m.MessageToast.show("Motocycle added successfully");
+			// 	},
+			// 	error: (oError) => {
+			// 		console.error("Error fetching motocycle data", oError);
+			// 	}
+			// });
+			const router = UIComponent.getRouterFor(this);
+			router.navTo("Create");
+		},
+
+		onPress(event) {
+			const item = event.getSource();
+			const router = UIComponent.getRouterFor(this);
+			router.navTo("Detail", {
+				motocycleId: item.getBindingContext("motocycleModel").getObject().ID
 			});
 		}
 
