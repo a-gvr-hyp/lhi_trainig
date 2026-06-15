@@ -1,9 +1,63 @@
 <mvc:View
 	xmlns="sap.m"
-	xmlns:mvc="sap.ui.core.mvc">
+	xmlns:f="sap.ui.layout.form"
+	xmlns:l="sap.ui.layout"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	controllerName="motocyclefreestyle.controller.Create">
 	<Page
 		title="{i18n>createPageTitle}">
-		<ObjectHeader
-			title="Create Motocycle"/>
+		<content>
+				<f:SimpleForm id="sfCreate"
+				editable="true"
+				layout="ResponsiveGridLayout"
+				title="Create Motocycle"
+				labelSpanXL="3"
+				labelSpanL="3"
+				labelSpanM="3"
+				labelSpanS="12"
+				adjustLabelSpan="false"
+				emptySpanXL="4"
+				emptySpanL="4"
+				emptySpanM="4"
+				emptySpanS="0"
+				columnsXL="1"
+				columnsL="1"
+				columnsM="1"
+				singleContainerFullSize="false" >
+				<f:content>
+					<Label text="Name" />
+					<Input id="iName" value="{createMotocycleModel>/name}" />
+					<Label text="Typ" />
+					<ComboBox id="sTyp" selectedKey="{createMotocycleModel>/typ}">
+						<core:Item key="ADV" text="ADV" />
+						<core:Item key="SPORT" text="Sport" />
+						<core:Item key="CHOPPER" text="Chopper" />
+					</ComboBox>
+					<Label text="Hubraum" />
+					<Input id="iHubraum" value="{createMotocycleModel>/hubraum}" type="Number"/>
+					<Label text="Farbe" />
+					<Input id="iFarbe" value="{createMotocycleModel>/farbe}" />
+					<Label text="company_ID"/>
+					<Input id="iCompanyID" value="{createMotocycleModel>/company_ID}"
+					showValueHelp="true"
+					valueHelpRequest=".onValueHelpRequest"
+					showSuggestion="true"
+					suggestionItems="{modelV2>/Company}">
+						<suggestionItems>
+							<core:Item text="{modelV2>name}" key="{modelV2>ID}"/>
+						</suggestionItems>
+					</Input>
+				</f:content>
+			</f:SimpleForm>
+		</content>
+		<footer>
+			<Bar>
+				<contentRight>
+					<Button text="Save" type="Accept" press=".onSave" />
+					<Button text="Cancel" type="Transparent" press=".onNavBack" />
+				</contentRight>
+			</Bar>
+		</footer>
 	</Page>
 </mvc:View>

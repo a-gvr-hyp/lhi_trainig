@@ -8,7 +8,7 @@
       id="invoiceList"
       width="auto"
       items="{
-         path : 'motocycleModel>/ADVMotocycle'
+         path : 'motocycleModel>/Motocycle'
       }">
       <headerToolbar>
          <Toolbar>
