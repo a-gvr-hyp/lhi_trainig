@@ -38,6 +38,10 @@
 					<Input id="iHubraum" value="{createMotocycleModel>/hubraum}" type="Number"/>
 					<Label text="Farbe" />
 					<Input id="iFarbe" value="{createMotocycleModel>/farbe}" />
+					<Label text="Jahr" />
+					<Input id="iJahr" value="{createMotocycleModel>/jahr}" type="Number"/>
+					<Label text="Preis" />
+					<Input id="iPreis" value="{createMotocycleModel>/preis}" type="Number"/>
 					<Label text="company_ID"/>
 					<Input id="iCompanyID" value="{createMotocycleModel>/company_ID}"
 					showValueHelp="true"

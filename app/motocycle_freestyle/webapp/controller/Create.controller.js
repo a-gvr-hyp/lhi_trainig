@@ -29,6 +29,8 @@ sap.ui.define([
                 name: oNewMotocycle.name,
                 typ: oNewMotocycle.typ,
                 hubraum: oNewMotocycle.hubraum,
+				jahr: oNewMotocycle.jahr,
+				preis: oNewMotocycle.preis,
                 farbe: oNewMotocycle.farbe,
                 company_ID: this.getView().byId("iCompanyID").getSelectedKey()
             }

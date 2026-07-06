@@ -142,6 +142,13 @@
           ]
         },
         {
+          "name": "Update",
+          "pattern": "update/{motocycleId}",
+          "target": [
+            "Update"
+          ]
+        },
+        {
           "name": "Create",
           "pattern": "create",
           "target": [
@@ -157,6 +164,10 @@
         "Detail": {
           "id": "Detail",
           "name": "Detail"
+        },
+        "Update": {
+          "id": "Update",
+          "name": "Update"
         },
         "Create": {
           "id": "Create",

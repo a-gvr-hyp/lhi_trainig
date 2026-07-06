@@ -1,11 +1,12 @@
 <mvc:View
-	controllerName="motocyclefreestyle.controller.Detail"
+	controllerName="motocyclefreestyle.controller.Update"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.uxap"
 	xmlns:layout="sap.ui.layout"
 	xmlns:m="sap.m"
+    xmlns:core="sap.ui.core"
 	xmlns:f="sap.ui.layout.form">
-	<ObjectPageLayout id="ObjectPageLayout"
+	<ObjectPageLayout id="ObjectPageLayoutUpdate"
 		enableLazyLoading="true"
 		beforeNavigate=".onBeforeNavigate"
 		useIconTabBar="true"
@@ -14,32 +15,32 @@
 		<headerTitle>
 			<ObjectPageDynamicHeaderTitle>
 				<expandedHeading>
-					<m:Title text="{detailModel>/name}" wrapping="true"/>
+					<m:Title text="{updateModel>/name}" wrapping="true"/>
 				</expandedHeading>
 
 				<snappedHeading>
-					<m:Title text="{detailModel>/name}" wrapping="true" />
+					<m:Title text="{updateModel>/name}" wrapping="true" />
 				</snappedHeading>
 
 				<expandedContent>
-					<m:Text text="{detailModel>/typ}"/>
+					<m:Text text="{updateModel>/typ}"/>
 				</expandedContent>
 
 				<snappedContent>
-					<m:Text text="{detailModel>/typ}"/>
+					<m:Text text="{updateModel>/typ}"/>
 				</snappedContent>
 
 				<actions>
-					<m:Button text="{i18n>editButtonText}" type="Emphasized" press=".onEdit"/>
-					<m:Button type="Transparent" text="{i18n>deleteButtonText}" press=".onDelete"/>
+					<m:Button text="{i18n>updateButtonText}" type="Emphasized" press=".onUpdate"/>
+					<m:Button type="Transparent" text="{i18n>cancelButtonText}" press=".onNavBack"/>
 				</actions>
 			</ObjectPageDynamicHeaderTitle>
 		</headerTitle>
 
 		<headerContent>
 			<m:FlexBox wrap="Wrap" fitContainer="true" >
-				<m:Label text="Hubraum: {detailModel>/hubraum}" class="sapUiSmallMarginBeginEnd"/>
-				<m:Label text="Farbe: {detailModel>/farbe}" class="sapUiSmallMarginBeginEnd"/>
+				<m:Label text="Hubraum: {updateModel>/hubraum}" class="sapUiSmallMarginBeginEnd"/>
+				<m:Label text="Farbe: {updateModel>/farbe}" class="sapUiSmallMarginBeginEnd"/>
 			</m:FlexBox>
 		</headerContent>
 
@@ -48,7 +49,7 @@
 				<subSections>
 					<ObjectPageSubSection title="{i18n>detailPageSubSectionDetailsTitle}" titleUppercase="false">
 						<blocks>
-							<f:SimpleForm id="SimpleFormDisplay354"
+							<f:SimpleForm
 								editable="false"
 								layout="ResponsiveGridLayout"
 								title="Address"
@@ -67,15 +68,17 @@
 								singleContainerFullSize="false" >
 								<f:content>
 									<m:Label text="Name" />
-									<m:Text id="nameText" text="{detailModel>/name}" />
+									<m:Input value="{updateModel>/name}" />
 									<m:Label text="Typ" />
-									<m:Text text="{detailModel>/typ}" />
+									<m:ComboBox id="sTypUpdate" selectedKey="{updateModel>/typ}">
+                                        <core:Item key="ADV" text="ADV" />
+                                        <core:Item key="SPORT" text="Sport" />
+                                        <core:Item key="CHOPPER" text="Chopper" />
+                                    </m:ComboBox>
 									<m:Label text="Farbe" />
-									<m:Text text="{detailModel>/farbe}" />
+									<m:Input value="{updateModel>/farbe}" />
 									<m:Label text="Hubraum" />
-									<m:Text id="countryText" text="{detailModel>/hubraum}" />
-									<m:Label text="Discounted Price" />
-									<m:Text id="discountPriceText" text="{detailModel>/discountPrice}" />
+									<m:Input value="{updateModel>/hubraum}" />
 								</f:content>
 							</f:SimpleForm>
 						</blocks>

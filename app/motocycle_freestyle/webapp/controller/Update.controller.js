@@ -6,11 +6,11 @@ sap.ui.define([
 ], function (Controller, History, UIComponent, MessageBox) {
     "use strict";
 
-    const Detail = Controller.extend("motocyclefreestyle.controller.Detail", {
+    const Update = Controller.extend("motocyclefreestyle.controller.Update", {
 
         onInit() {
             const router = UIComponent.getRouterFor(this);
-            router.getRoute("Detail").attachPatternMatched(this.onObjectMatched, this);
+            router.getRoute("Update").attachPatternMatched(this.onObjectMatched, this);
         },
 
         onObjectMatched(event) {
@@ -18,8 +18,8 @@ sap.ui.define([
             const oModel = this.getOwnerComponent().getModel("modelV2");
             oModel.read("/Motocycle(guid'" + motocycleId + "')", {
                 success: (oData) => {
-                    const oDetailModel = new sap.ui.model.json.JSONModel(oData);
-                    this.getView().setModel(oDetailModel, "detailModel");
+                    const oUpdateModel = new sap.ui.model.json.JSONModel(oData);
+                    this.getView().setModel(oUpdateModel, "updateModel");
                 },
                 error: (oError) => {
                     console.error("Error fetching motocycle data", oError);
@@ -38,31 +38,6 @@ sap.ui.define([
             }
         },
 
-        onDelete() {
-            MessageBox.warning("Are you sure you want to delete this motocycle?", {
-                actions: ["Yes", MessageBox.Action.CLOSE],
-                emphasizedAction: "Yes",
-                onClose: function (sAction) {
-                    if (sAction === "Yes") {
-                        const oModel = this.getOwnerComponent().getModel("modelV2");
-                        const motocycleId = this.getView().getModel("detailModel").getProperty("/ID");
-                        oModel.remove("/Motocycle(guid'" + motocycleId + "')", {
-                            success: () => {
-                                sap.m.MessageToast.show("Motocycle deleted successfully");
-                                this.getMotocycle();
-                                this.onNavBack();
-                            },
-                            error: (oError) => {
-                                console.error("Error deleting motocycle", oError);
-                                sap.m.MessageToast.show("Error deleting motocycle");
-                            }
-                        });
-                    }
-                }.bind(this),
-                dependentOn: this.getView()
-            });
-        },
-
         getMotocycle() {
 			const oModel = this.getOwnerComponent().getModel("modelV2");
 			oModel.read("/Motocycle", {
@@ -77,11 +52,30 @@ sap.ui.define([
 			});
 		},
 
-        onEdit() {
-            const motocycleId = this.getView().getModel("detailModel").getProperty("/ID");
-            const router = UIComponent.getRouterFor(this);
-            router.navTo("Update", { motocycleId: motocycleId });
+        onUpdate() {
+            MessageBox.warning("Are you sure you want to update this motocycle?", {
+                actions: ["Yes", MessageBox.Action.CLOSE],
+                emphasizedAction: "Yes",
+                onClose: function (sAction) {
+                    if (sAction === "Yes") {
+                        const oModel = this.getOwnerComponent().getModel("modelV2");
+                        const motocycleId = this.getView().getModel("updateModel").getProperty("/ID");
+                        oModel.update("/Motocycle(guid'" + motocycleId + "')", this.getView().getModel("updateModel").getData(), {
+                            success: () => {
+                                sap.m.MessageToast.show("Motocycle updated successfully");
+                                this.getMotocycle();
+                                this.onNavBack();
+                            },
+                            error: (oError) => {
+                                console.error("Error updating motocycle", oError);
+                                sap.m.MessageToast.show("Error updating motocycle");
+                            }
+                        });
+                    }
+                }.bind(this),
+                dependentOn: this.getView()
+            });
         }
     });
-    return Detail;
+    return Update;
 });

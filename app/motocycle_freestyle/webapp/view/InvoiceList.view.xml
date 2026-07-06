@@ -30,7 +30,7 @@
             title="{motocycleModel>name} - {motocycleModel>farbe}"
             number="{
                   parts: [
-                     'motocycleModel>hubraum',
+                     'motocycleModel>discountPrice',
                      'view>/currency'
                  ],
                  type: 'Currency',
@@ -39,16 +39,19 @@
                }
             }"
             numberUnit="{view>/currency}"
-            numberState="{= ${motocycleModel>hubraum} > 1000 ? 'Error' : 'Success' }"
+            numberState="{= ${motocycleModel>hasDiscount} ? 'Success' : 'Information' }"
             type="Navigation"
             press=".onPress">
                <firstStatus>
                     <ObjectStatus
                         text="{
-                            path: 'motocycleModel>farbe',
+                            path: 'motocycleModel>hasDiscount',
                             formatter: '.statusText'
                         }"/>
                 </firstStatus>
+                <ObjectAttribute text="Hubraum: {motocycleModel>hubraum}" />
+                <ObjectAttribute text="Farbe: {motocycleModel>farbe}" />
+                <ObjectAttribute text="Price: {motocycleModel>preis}" />
             </ObjectListItem>
       </items>
    </List>

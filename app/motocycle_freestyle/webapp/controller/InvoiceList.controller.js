@@ -12,18 +12,9 @@ sap.ui.define([
 			this.getMotocycle();
 		},
 
-		statusText(sStatus) {
-			const oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
-			switch (sStatus) {
-				case "A":
-					return oResourceBundle.getText("invoiceStatusA");
-				case "B":
-					return oResourceBundle.getText("invoiceStatusB");
-				case "C":
-					return oResourceBundle.getText("invoiceStatusC");
-				default:
-					return sStatus;
-			}
+		statusText(bStatus) {
+			if (bStatus) return "Discounted";
+			return "Regular Price";
 		},
 
 		onFilterInvoices(oEvent) {
