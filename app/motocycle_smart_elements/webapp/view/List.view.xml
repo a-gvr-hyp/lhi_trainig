@@ -1,0 +1,7 @@
+<mvc:View
+   controllerName="motocyclesmartelements.controller.List"
+   xmlns="sap.m"
+   xmlns:core="sap.ui.core"
+   xmlns:mvc="sap.ui.core.mvc">
+   <Text id="demoText" text="{i18n>invoiceListTitle}" class="sapUiSmallMargin"/>
+</mvc:View>

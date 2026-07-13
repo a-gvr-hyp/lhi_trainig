@@ -1,6 +1,19 @@
-<mvc:View controllerName="motocyclesmartelements.controller.App"
+<mvc:View
+	controllerName="motocyclesmartelements.controller.App"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
-    </Page>
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    displayBlock="true">
+    <Shell>
+      <App id="app">
+        <pages>
+          <Page title="{i18n>homePageTitle}">
+            <content>
+              <mvc:XMLView viewName="motocyclesmartelements.view.List"/>
+            </content>
+          </Page>
+        </pages>
+      </App>
+    </Shell>
 </mvc:View>
