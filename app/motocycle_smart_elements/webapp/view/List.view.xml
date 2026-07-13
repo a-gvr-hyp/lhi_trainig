@@ -1,7 +1,68 @@
 <mvc:View
-   controllerName="motocyclesmartelements.controller.List"
-   xmlns="sap.m"
-   xmlns:core="sap.ui.core"
-   xmlns:mvc="sap.ui.core.mvc">
-   <Text id="demoText" text="{i18n>invoiceListTitle}" class="sapUiSmallMargin"/>
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:smartFilterBar="sap.ui.comp.smartfilterbar"
+	xmlns:smartTable="sap.ui.comp.smarttable"
+	xmlns:core="sap.ui.core"
+	controllerName="motocyclesmartelements.controller.List"
+	height="100%">
+		<smartFilterBar:SmartFilterBar
+			id="sfbMotocycles"
+			entitySet="Motocycle"
+			persistencyKey="trainigMotocycleSmartElementsListSFBMotocycle"
+			basicSearchFieldName="name"
+			enableBasicSearch="true" >
+			<!-- layout data used to make the table growing but the filter bar fixed -->
+			<smartFilterBar:layoutData>
+				<FlexItemData shrinkFactor="0"/>
+			</smartFilterBar:layoutData>
+		</smartFilterBar:SmartFilterBar>
+		<!-- use this to make the table occupy the available screen height -->
+		<smartTable:SmartTable
+	        id="stMotocycle"
+    	    entitySet="Motocycle"
+			smartFilterId="sfbMotocycles"
+        	tableType="ResponsiveTable"
+        	enableExport="true"
+        	useVariantManagement="true"
+            useTablePersonalisation="true"
+            header="Motocycles"
+            showRowCount="true"
+            persistencyKey="trainigMotocycleSmartElementsListSTMotocycle"
+            enableAutoBinding="true"
+            enableAutoColumnWidth="true">
+				<smartTable:layoutData>
+					<FlexItemData growFactor="1" baseSize="0%"/>
+				</smartTable:layoutData>
+				<Table>
+					<columns>
+						<Column>
+							<customData>
+								<core:CustomData key="p13nData" value='\{
+									"columnKey": "hasDiscount",
+									"leadingProperty": "hasDiscount",
+									"sortProperty": "hasDiscount",
+									"filterProperty": "hasDiscount",
+									"columnIndex": 0,
+									"autoColumnWidth": true,
+									"isGroupable": true
+									\}'/>
+							</customData>
+							<Text text="{i18n>hasDiscount}" />
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<core:Icon
+								src="sap-icon://accept"
+								class="size1"
+								visible="{hasDiscount}" >
+								<core:layoutData>
+									<FlexItemData growFactor="1" />
+								</core:layoutData>
+							</core:Icon>
+						</ColumnListItem>
+					</items>
+				</Table>
+		</smartTable:SmartTable>
 </mvc:View>

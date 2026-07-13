@@ -23,6 +23,14 @@
           "annotations": [],
           "odataVersion": "4.0"
         }
+      },
+      "mainServiceV2": {
+        "uri": "/odata/v2/motocycle/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "2.0"
+        }
       }
     },
     "crossNavigation": {
@@ -75,7 +83,7 @@
           "bundleName": "motocyclesmartelements.i18n.i18n"
         }
       },
-      "": {
+      "modelV4": {
         "dataSource": "mainService",
         "preload": true,
         "settings": {
@@ -83,6 +91,10 @@
           "autoExpandSelect": true,
           "earlyRequests": true
         }
+      },
+      "": {
+        "dataSource": "mainServiceV2",
+        "preload": true
       }
     },
     "resources": {
