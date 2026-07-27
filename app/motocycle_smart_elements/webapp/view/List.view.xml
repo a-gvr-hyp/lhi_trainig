@@ -34,7 +34,14 @@
 				<smartTable:layoutData>
 					<FlexItemData growFactor="1" baseSize="0%"/>
 				</smartTable:layoutData>
-				<Table>
+				<smartTable:customToolbar>
+					<OverflowToolbar design="Transparent">
+						<ToolbarSpacer/>
+						<OverflowToolbarButton icon="sap-icon://create" tooltip="Create" press=".onCreate"/>
+						<OverflowToolbarButton icon="sap-icon://delete" tooltip="Delete" press=".onDeleteMultipleItems" enabled="{viewModel>/isDeleteEnabled}"/>
+					</OverflowToolbar>
+				</smartTable:customToolbar>
+				<Table id="itMotocycle" mode="MultiSelect" selectionChange="onTableSelectionChange">
 					<columns>
 						<Column>
 							<customData>
@@ -52,7 +59,7 @@
 						</Column>
 					</columns>
 					<items>
-						<ColumnListItem>
+						<ColumnListItem type="Navigation" press="onListItemPress">
 							<core:Icon
 								src="sap-icon://accept"
 								class="size1"

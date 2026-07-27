@@ -95,6 +95,12 @@
       "": {
         "dataSource": "mainServiceV2",
         "preload": true
+      },
+      "viewModel": {
+        "type": "sap.ui.model.json.JSONModel"
+      },
+      "createMotocycleModel": {
+        "type": "sap.ui.model.json.JSONModel"
       }
     },
     "resources": {
@@ -123,12 +129,45 @@
           "target": [
             "TargetApp"
           ]
+        },
+        {
+          "name": "Detail",
+          "pattern": "detail/{motocycleId}",
+          "target": [
+            "Detail"
+          ]
+        },
+        {
+          "name": "Update",
+          "pattern": "update/{motocycleId}",
+          "target": [
+            "Update"
+          ]
+        },
+        {
+          "name": "Create",
+          "pattern": "create",
+          "target": [
+            "Create"
+          ]
         }
       ],
       "targets": {
         "TargetApp": {
-          "id": "App",
+          "id": "List",
           "name": "App"
+        },
+        "Detail": {
+          "id": "Detail",
+          "name": "Detail"
+        },
+        "Update": {
+          "id": "Update",
+          "name": "Update"
+        },
+        "Create": {
+          "id": "Create",
+          "name": "Create"
         }
       }
     },
