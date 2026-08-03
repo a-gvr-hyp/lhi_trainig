@@ -80,6 +80,10 @@ modules:
       - motocyclesmartelements.zip
       name: motocyclesmartelements
       target-path: resources/
+    - artifacts:
+      - motocyclefcl.zip
+      name: motocyclefcl
+      target-path: resources/
 - name: book
   type: html5
   path: app/book
@@ -113,6 +117,16 @@ modules:
 - name: motocyclesmartelements
   type: html5
   path: app/motocycle_smart_elements
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: motocyclefcl
+  type: html5
+  path: app/motocycle_fcl
   build-parameters:
     build-result: dist
     builder: custom
