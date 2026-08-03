@@ -23,7 +23,8 @@
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
     "watch-motocycle_fiori": "cds watch --open motocyclefiori/index.html?sap-ui-xx-viewCache=false --livereload false",
     "watch-motocycle_freestyle": "cds watch --open motocyclefreestyle/index.html?sap-ui-xx-viewCache=false --livereload false",
-    "watch-motocycle_smart_elements": "cds watch --open motocyclesmartelements/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-motocycle_smart_elements": "cds watch --open motocyclesmartelements/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-motocycle_fcl": "cds watch --open motocyclefcl/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "cds": {},

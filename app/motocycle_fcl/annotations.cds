@@ -1,0 +1,1 @@
+using MotocycleService as service from '../../srv/cat-service';
