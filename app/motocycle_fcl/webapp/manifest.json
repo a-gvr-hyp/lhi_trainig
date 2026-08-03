@@ -23,6 +23,14 @@
           "annotations": [],
           "odataVersion": "4.0"
         }
+      },
+      "mainServiceV2": {
+        "uri": "/odata/v2/motocycle/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "2.0"
+        }
       }
     },
     "crossNavigation": {
@@ -56,7 +64,7 @@
     }
   },
   "sap.ui5": {
-    "flexEnabled": true,
+    "flexEnabled": false,
     "dependencies": {
       "minUI5Version": "1.150.1",
       "libs": {
@@ -76,7 +84,7 @@
           "bundleName": "motocyclefcl.i18n.i18n"
         }
       },
-      "": {
+      "modelV4": {
         "dataSource": "mainService",
         "preload": true,
         "settings": {
@@ -84,6 +92,10 @@
           "autoExpandSelect": true,
           "earlyRequests": true
         }
+      },
+      "products": {
+        "dataSource": "mainServiceV2",
+        "preload": true
       }
     },
     "resources": {
