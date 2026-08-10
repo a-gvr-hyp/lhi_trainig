@@ -43,7 +43,7 @@
 						</Column>
 					</columns>
 					<items>
-						<ColumnListItem type="Navigation">
+						<ColumnListItem type="Navigation" press=".onListItemPress">
 							<cells>
 								<ObjectIdentifier title="{products>name}" text="{products>typ}"/>
 								<ObjectIdentifier title="{products>preis}" text="{products>discountPrice}"/>
