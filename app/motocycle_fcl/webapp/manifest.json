@@ -71,7 +71,7 @@
         "sap.m": {},
         "sap.ui.core": {},
         "sap.f": {},
-				"sap.uxap": {}
+        "sap.uxap": {}
       }
     },
     "contentDensities": {
@@ -108,29 +108,43 @@
     },
     "routing": {
       "config": {
-        "routerClass": "sap.m.routing.Router",
-        "controlAggregation": "pages",
-        "controlId": "app",
-        "transition": "slide",
-        "type": "View",
+        "routerClass": "sap.f.routing.Router",
         "viewType": "XML",
-        "path": "motocyclefcl.view",
         "async": true,
-        "viewPath": "motocyclefcl.view"
+        "viewPath": "motocyclefcl.view",
+        "controlAggregation": "beginColumnPages",
+        "controlId": "flexibleColumnLayout",
+        "transition": "slide"
       },
       "routes": [
         {
-          "name": "RouteApp",
-          "pattern": ":?query:",
+          "pattern": ":layout:",
+          "name": "list",
           "target": [
-            "TargetApp"
-          ]
+            "list"
+          ],
+          "layout": "OneColumn"
+        },
+        {
+          "pattern": "detail/{product}/{layout}",
+          "name": "detail",
+          "target": [
+            "list",
+            "detail"
+          ],
+          "layout": "TwoColumnsMidExpanded"
         }
       ],
       "targets": {
-        "TargetApp": {
-          "id": "App",
-          "name": "App"
+        "list": {
+          "viewName": "List",
+          "controlAggregation": "beginColumnPages",
+          "viewId": "list"
+        },
+        "detail": {
+          "viewName": "Detail",
+          "controlAggregation": "midColumnPages",
+          "viewId": "detail"
         }
       }
     },
