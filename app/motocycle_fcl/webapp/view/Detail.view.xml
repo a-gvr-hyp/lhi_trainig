@@ -3,7 +3,8 @@
 	xmlns:m="sap.m"
 	xmlns:f="sap.f"
 	xmlns:form="sap.ui.layout.form"
-	xmlns:mvc="sap.ui.core.mvc">
+	xmlns:mvc="sap.ui.core.mvc"
+	controllerName="motocyclefcl.controller.Detail">
 	<ObjectPageLayout
 		id="ObjectPageLayout"
 		showTitleInHeaderContent="true"
@@ -18,7 +19,8 @@
 				<actions>
 					<m:ToggleButton
 						text="Edit"
-						type="Emphasized"/>
+						type="Emphasized"
+						press=".onEditToggleButtonPress"/>
 					<m:Button
 						text="Delete"
 						type="Transparent"/>
@@ -109,5 +111,12 @@
 			</ObjectPageSection>
 		</sections>
 
+		<footer>
+			<m:OverflowToolbar>
+				<m:ToolbarSpacer/>
+				<m:Button type="Accept" text="Save"/>
+				<m:Button type="Reject" text="Cancel"/>
+			</m:OverflowToolbar>
+		</footer>
 	</ObjectPageLayout>
 </mvc:View>
