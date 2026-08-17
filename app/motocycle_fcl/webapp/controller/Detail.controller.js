@@ -15,9 +15,9 @@ sap.ui.define([
 		},
 
         _onProductMatched: function (oEvent) {
-			this._product = oEvent.getParameter("arguments").product || this._product || "0";
+			this.motocycle = oEvent.getParameter("arguments").motocycle || this.motocycle || "0";
 			this.getView().bindElement({
-				path: "/ProductCollection/" + this._product,
+				path: "/" + this.motocycle,
 				model: "products"
 			});
 		},

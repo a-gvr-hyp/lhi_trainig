@@ -126,7 +126,7 @@
           "layout": "OneColumn"
         },
         {
-          "pattern": "detail/{product}/{layout}",
+          "pattern": "detail/{motocycle}/{layout}",
           "name": "detail",
           "target": [
             "list",

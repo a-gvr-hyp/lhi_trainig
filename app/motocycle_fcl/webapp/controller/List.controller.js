@@ -40,10 +40,10 @@ sap.ui.define([
 		},
 
 		onListItemPress: function (oEvent) {
-			var productPath = oEvent.getSource().getBindingContext("products").getPath(),
-				product = productPath.split("/").slice(-1).pop();
+			var motocyclePath = oEvent.getSource().getBindingContext("products").getPath(),
+				motocycle = motocyclePath.split("/").slice(-1).pop();
 
-			this.oRouter.navTo("detail", {layout: fioriLibrary.LayoutType.TwoColumnsMidExpanded, product: product});
+			this.oRouter.navTo("detail", {layout: fioriLibrary.LayoutType.TwoColumnsMidExpanded, motocycle: motocycle});
 		}
 	});
 });
