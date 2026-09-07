@@ -1,6 +1,7 @@
 sap.ui.define([
-	"sap/ui/core/mvc/Controller"
-], function (Controller) {
+	"sap/ui/core/mvc/Controller",
+	'sap/f/library'
+], function (Controller, fioriLibrary) {
 	"use strict";
 
 	return Controller.extend("motocyclefcl.controller.Detail", {
@@ -12,6 +13,7 @@ sap.ui.define([
 
 			this.oRouter.getRoute("list").attachPatternMatched(this._onProductMatched, this);
 			this.oRouter.getRoute("detail").attachPatternMatched(this._onProductMatched, this);
+			this.oRouter.getRoute("company").attachPatternMatched(this._onProductMatched, this);
 		},
 
         _onProductMatched: function (oEvent) {
@@ -20,6 +22,13 @@ sap.ui.define([
 				path: "/" + this.motocycle,
 				model: "products"
 			});
+		},
+		
+		onSupplierPress: function (oEvent) {
+			var supplierPath = oEvent.getSource().getBindingContext("products").getPath(),
+				company = supplierPath.split("/").slice(-1).pop();
+
+			this.oRouter.navTo("company", {layout: fioriLibrary.LayoutType.ThreeColumnsMidExpanded, company: company, motocycle: this.motocycle});
 		},
 
 		onEditToggleButtonPress: function() {

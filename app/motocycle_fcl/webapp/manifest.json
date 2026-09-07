@@ -133,7 +133,16 @@
             "detail"
           ],
           "layout": "TwoColumnsMidExpanded"
-        }
+        },
+				{
+					"pattern": "detail/{motocycle}/company/{company}/{layout}",
+					"name": "company",
+					"target": [
+						"list",
+						"detail",
+						"company"
+					]
+				}
       ],
       "targets": {
         "list": {
@@ -145,7 +154,12 @@
           "viewName": "Detail",
           "controlAggregation": "midColumnPages",
           "viewId": "detail"
-        }
+        },
+				"company": {
+					"name": "Company",
+					"controlAggregation": "endColumnPages",
+          "viewId": "comapny"
+				}
       }
     },
     "rootView": {

@@ -18,6 +18,7 @@ sap.ui.define([
 			// Save the current route name
 			this.currentRouteName = sRouteName;
 			this.currentMotocycle = oArguments.motocycle;
+			this.currentCompany = oArguments.company;
 		},
 
 		onStateChanged: function (oEvent) {
