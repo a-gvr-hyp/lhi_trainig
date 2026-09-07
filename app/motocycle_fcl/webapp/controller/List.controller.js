@@ -3,9 +3,8 @@ sap.ui.define([
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/ui/model/Sorter",
-	"sap/m/MessageBox",
-	"sap/f/library"
-], function (Controller, Filter, FilterOperator, Sorter, MessageBox, fioriLibrary) {
+	"sap/m/MessageBox"
+], function (Controller, Filter, FilterOperator, Sorter, MessageBox) {
 	"use strict";
 
 	return Controller.extend("motocyclefcl.controller.List", {
@@ -28,7 +27,7 @@ sap.ui.define([
 		},
 
 		onAdd: function () {
-			MessageBox.information("This functionality is not ready yet.", {title: "Aw, Snap!"});
+			MessageBox.information("This functionality is not ready yet.", { title: "Aw, Snap!" });
 		},
 
 		onSort: function () {
@@ -41,9 +40,16 @@ sap.ui.define([
 
 		onListItemPress: function (oEvent) {
 			var motocyclePath = oEvent.getSource().getBindingContext("products").getPath(),
-				motocycle = motocyclePath.split("/").slice(-1).pop();
+				motocycle = motocyclePath.split("/").slice(-1).pop(),
+				oNextUIState;
 
-			this.oRouter.navTo("detail", {layout: fioriLibrary.LayoutType.TwoColumnsMidExpanded, motocycle: motocycle});
+			this.getOwnerComponent().getHelper().then(function (oHelper) {
+				oNextUIState = oHelper.getNextUIState(1);
+				this.oRouter.navTo("detail", {
+					layout: oNextUIState.layout,
+					motocycle: motocycle
+				});
+			}.bind(this));
 		}
 	});
 });
