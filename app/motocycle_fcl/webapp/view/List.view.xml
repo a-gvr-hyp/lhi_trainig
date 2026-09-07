@@ -30,6 +30,9 @@
 						path: 'products>/Motocycle',
 						sorter: {
 							path: 'name'
+						},
+						parameters: {
+							expand: 'company'
 						}
 					}"
 					class="sapFDynamicPageAlignContent"
