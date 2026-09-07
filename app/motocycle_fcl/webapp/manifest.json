@@ -156,9 +156,9 @@
           "viewId": "detail"
         },
 				"company": {
-					"name": "Company",
+					"viewName": "Company",
 					"controlAggregation": "endColumnPages",
-          "viewId": "comapny"
+          "viewId": "company"
 				}
       }
     },

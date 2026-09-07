@@ -116,12 +116,9 @@
 							<m:Table
 								id="suppliersTable"
 								items="{
-									path: 'products>/Motocycle',
+									path: 'products>/Company',
 									sorter: {
 										path: 'name'
-									},
-									parameters: {
-										expand: 'company'
 									}
 								}">
 								<m:columns>
@@ -130,7 +127,7 @@
 								<m:items>
 									<m:ColumnListItem type="Navigation" press=".onSupplierPress">
 										<m:cells>
-											<m:ObjectIdentifier text="{products>company/name}"/>
+											<m:ObjectIdentifier text="{products>name}"/>
 										</m:cells>
 									</m:ColumnListItem>
 								</m:items>

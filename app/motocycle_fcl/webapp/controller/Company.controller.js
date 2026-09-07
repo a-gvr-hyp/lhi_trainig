@@ -14,11 +14,11 @@ sap.ui.define([
 		},
 
 		_onPatternMatch: function (oEvent) {
-			this._supplier = oEvent.getParameter("arguments").supplier || this._supplier || "0";
-			this._product = oEvent.getParameter("arguments").product || this._product || "0";
+			this.motocycle = oEvent.getParameter("arguments").motocycle || this.motocycle || "0";
+			this.company = oEvent.getParameter("arguments").company || this.company || "0";
 
 			this.getView().bindElement({
-				path: "/ProductCollectionStats/Filters/1/values/" + this._supplier,
+				path: "/" + this.company,
 				model: "products"
 			});
 		},

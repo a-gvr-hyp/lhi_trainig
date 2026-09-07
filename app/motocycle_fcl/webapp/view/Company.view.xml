@@ -8,7 +8,7 @@
 			<DynamicPageTitle>
 				<heading>
 					<m:FlexBox wrap="Wrap" fitContainer="true" alignItems="Center">
-						<m:Title text="{products>text}" wrapping="true" class="sapUiTinyMarginEnd"/>
+						<m:Title text="{products>name}" wrapping="true" class="sapUiTinyMarginEnd"/>
 					</m:FlexBox>
 				</heading>
 			</DynamicPageTitle>
