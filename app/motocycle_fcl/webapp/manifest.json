@@ -13,7 +13,7 @@
     "sourceTemplate": {
       "id": "@sap/generator-fiori:basic",
       "version": "1.30.0",
-      "toolsId": "98a4b6e6-3238-44b0-bdce-96c4bb1cc989"
+      "toolsId": "dc994f39-4ad9-4ab0-b5a9-4cc7826b686d"
     },
     "dataSources": {
       "mainService": {
@@ -174,3 +174,4 @@
     "service": "training_ag"
   }
 }
+
