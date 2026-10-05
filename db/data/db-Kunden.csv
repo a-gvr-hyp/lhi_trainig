@@ -1,4 +1,4 @@
-ID,vorname,nachname,land,stadt
-62537d2e-f45e-4815-b5e1-243a1b3c042a,Anna,Müller,DE,München
-62537d2e-f45e-4815-b5e1-243a1b3c042b,Bernd,Schmidt,DE,Berlin
-62537d2e-f45e-4815-b5e1-243a1b3c042c,Clara,Weber,DE,Hamburg
+ID,vorname,nachname,stadt
+62537d2e-f45e-4815-b5e1-243a1b3c042a,Anna,Müller,München
+62537d2e-f45e-4815-b5e1-243a1b3c042b,Bernd,Schmidt,Berlin
+62537d2e-f45e-4815-b5e1-243a1b3c042c,Clara,Weber,Hamburg
