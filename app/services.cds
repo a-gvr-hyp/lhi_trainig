@@ -5,4 +5,6 @@ using from './motocycle_freestyle/annotations';
 
 using from './motocycle_smart_elements/annotations';
 
-using from './motorcycle_fcl/annotations';
+using from './motocycle_fcl/annotations';
+
+using from './bestellungen_fiori/annotations';

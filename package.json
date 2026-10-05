@@ -24,7 +24,8 @@
     "watch-motocycle_fiori": "cds watch --open motocyclefiori/index.html?sap-ui-xx-viewCache=false --livereload false",
     "watch-motocycle_freestyle": "cds watch --open motocyclefreestyle/index.html?sap-ui-xx-viewCache=false --livereload false",
     "watch-motocycle_smart_elements": "cds watch --open motocyclesmartelements/index.html?sap-ui-xx-viewCache=false --livereload false",
-    "watch-motorcycle_fcl": "cds watch --open motorcyclefcl/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-motocycle_fcl": "cds watch --open motocyclefcl/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-bestellungen_fiori": "cds watch --open bestellungenfiori/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "cds": {},
@@ -33,6 +34,7 @@
   ],
   "sapux": [
     "app/book",
-    "app/motocycle_fiori"
+    "app/motocycle_fiori",
+    "app/bestellungen_fiori"
   ]
 }
