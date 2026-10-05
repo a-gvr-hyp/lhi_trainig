@@ -70,7 +70,8 @@
       "libs": {
         "sap.m": {},
         "sap.ui.core": {},
-        "sap.f": {}
+        "sap.f": {},
+        "sap.uxap": {}
       }
     },
     "contentDensities": {
@@ -107,30 +108,58 @@
     },
     "routing": {
       "config": {
-        "routerClass": "sap.m.routing.Router",
-        "controlAggregation": "pages",
-        "controlId": "app",
-        "transition": "slide",
-        "type": "View",
+        "routerClass": "sap.f.routing.Router",
         "viewType": "XML",
-        "path": "motocyclefcl.view",
         "async": true,
-        "viewPath": "motocyclefcl.view"
+        "viewPath": "motocyclefcl.view",
+        "controlAggregation": "beginColumnPages",
+        "controlId": "flexibleColumnLayout",
+        "transition": "slide"
       },
       "routes": [
         {
-          "name": "RouteApp",
-          "pattern": ":?query:",
+          "pattern": ":layout:",
+          "name": "list",
           "target": [
-            "TargetApp"
-          ]
-        }
+            "list"
+          ],
+          "layout": "OneColumn"
+        },
+        {
+          "pattern": "detail/{motocycle}/{layout}",
+          "name": "detail",
+          "target": [
+            "list",
+            "detail"
+          ],
+          "layout": "TwoColumnsMidExpanded"
+        },
+				{
+					"pattern": "detail/{motocycle}/company/{company}/{layout}",
+					"name": "company",
+					"target": [
+						"list",
+						"detail",
+						"company"
+					]
+				}
       ],
       "targets": {
-        "TargetApp": {
-          "id": "App",
-          "name": "App"
-        }
+        "list": {
+          "viewName": "List",
+          "controlAggregation": "beginColumnPages",
+          "viewId": "list"
+        },
+        "detail": {
+          "viewName": "Detail",
+          "controlAggregation": "midColumnPages",
+          "viewId": "detail"
+        },
+				"company": {
+					"viewName": "Company",
+					"controlAggregation": "endColumnPages",
+          "viewId": "company"
+				}
       }
     },
     "rootView": {
@@ -145,3 +174,4 @@
     "service": "training_ag"
   }
 }
+

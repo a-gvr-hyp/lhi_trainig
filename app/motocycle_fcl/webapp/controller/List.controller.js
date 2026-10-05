@@ -12,6 +12,7 @@ sap.ui.define([
 			this.oView = this.getView();
 			this._bDescendingSort = false;
 			this.oProductsTable = this.oView.byId("productsTable");
+			this.oRouter = this.getOwnerComponent().getRouter();
 		},
 
 		onSearch: function (oEvent) {
@@ -19,22 +20,36 @@ sap.ui.define([
 				sQuery = oEvent.getParameter("query");
 
 			if (sQuery && sQuery.length > 0) {
-				oTableSearchState = [new Filter("Name", FilterOperator.Contains, sQuery)];
+				oTableSearchState = [new Filter("name", FilterOperator.Contains, sQuery)];
 			}
 
 			this.oProductsTable.getBinding("items").filter(oTableSearchState, "Application");
 		},
 
 		onAdd: function () {
-			MessageBox.information("This functionality is not ready yet.", {title: "Aw, Snap!"});
+			MessageBox.information("This functionality is not ready yet.", { title: "Aw, Snap!" });
 		},
 
 		onSort: function () {
 			this._bDescendingSort = !this._bDescendingSort;
 			var oBinding = this.oProductsTable.getBinding("items"),
-				oSorter = new Sorter("Name", this._bDescendingSort);
+				oSorter = new Sorter("preis", this._bDescendingSort);
 
 			oBinding.sort(oSorter);
+		},
+
+		onListItemPress: function (oEvent) {
+			var motocyclePath = oEvent.getSource().getBindingContext("products").getPath(),
+				motocycle = motocyclePath.split("/").slice(-1).pop(),
+				oNextUIState;
+
+			this.getOwnerComponent().getHelper().then(function (oHelper) {
+				oNextUIState = oHelper.getNextUIState(1);
+				this.oRouter.navTo("detail", {
+					layout: oNextUIState.layout,
+					motocycle: motocycle
+				});
+			}.bind(this));
 		}
 	});
 });

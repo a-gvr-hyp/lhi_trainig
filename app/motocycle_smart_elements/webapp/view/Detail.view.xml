@@ -1,0 +1,87 @@
+<mvc:View
+	controllerName="motocyclesmartelements.controller.Detail"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.uxap"
+	xmlns:layout="sap.ui.layout"
+	xmlns:m="sap.m"
+	xmlns:f="sap.ui.layout.form">
+	<ObjectPageLayout id="ObjectPageLayout"
+		enableLazyLoading="true"
+		beforeNavigate=".onBeforeNavigate"
+		useIconTabBar="true"
+		showTitleInHeaderContent="true"
+		upperCaseAnchorBar="false">
+		<headerTitle>
+			<ObjectPageDynamicHeaderTitle>
+				<expandedHeading>
+					<m:Title text="{detailModel>/name}" wrapping="true"/>
+				</expandedHeading>
+
+				<snappedHeading>
+					<m:Title text="{detailModel>/name}" wrapping="true" />
+				</snappedHeading>
+
+				<expandedContent>
+					<m:Text text="{detailModel>/typ}"/>
+				</expandedContent>
+
+				<snappedContent>
+					<m:Text text="{detailModel>/typ}"/>
+				</snappedContent>
+
+				<actions>
+					<m:Button text="{i18n>editButtonText}" type="Emphasized" press=".onEdit"/>
+					<m:Button type="Transparent" text="{i18n>deleteButtonText}" press=".onDelete"/>
+				</actions>
+			</ObjectPageDynamicHeaderTitle>
+		</headerTitle>
+
+		<headerContent>
+			<m:FlexBox wrap="Wrap" fitContainer="true" >
+				<m:Label text="Hubraum: {detailModel>/hubraum}" class="sapUiSmallMarginBeginEnd"/>
+				<m:Label text="Farbe: {detailModel>/farbe}" class="sapUiSmallMarginBeginEnd"/>
+			</m:FlexBox>
+		</headerContent>
+
+		<sections>
+			<ObjectPageSection titleUppercase="false" title="{i18n>detailPageSectionDetailsTitle}">
+				<subSections>
+					<ObjectPageSubSection title="{i18n>detailPageSubSectionDetailsTitle}" titleUppercase="false">
+						<blocks>
+							<f:SimpleForm id="SimpleFormDisplay354"
+								editable="false"
+								layout="ResponsiveGridLayout"
+								title="Address"
+								labelSpanXL="3"
+								labelSpanL="3"
+								labelSpanM="3"
+								labelSpanS="12"
+								adjustLabelSpan="false"
+								emptySpanXL="4"
+								emptySpanL="4"
+								emptySpanM="4"
+								emptySpanS="0"
+								columnsXL="1"
+								columnsL="1"
+								columnsM="1"
+								singleContainerFullSize="false" >
+								<f:content>
+									<m:Label text="Name" />
+									<m:Text id="nameText" text="{detailModel>/name}" />
+									<m:Label text="Typ" />
+									<m:Text text="{detailModel>/typ}" />
+									<m:Label text="Farbe" />
+									<m:Text text="{detailModel>/farbe}" />
+									<m:Label text="Hubraum" />
+									<m:Text id="countryText" text="{detailModel>/hubraum}" />
+									<m:Label text="Discounted Price" />
+									<m:Text id="discountPriceText" text="{detailModel>/discountPrice}" />
+								</f:content>
+							</f:SimpleForm>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+		</sections>
+	</ObjectPageLayout>
+</mvc:View>
