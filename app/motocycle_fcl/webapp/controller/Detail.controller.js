@@ -6,10 +6,10 @@ sap.ui.define([
 
 	return Controller.extend("motocyclefcl.controller.Detail", {
 		onInit: function () {
-			var oOwnerComponent = this.getOwnerComponent();
+			this.oOwnerComponent = this.getOwnerComponent();
 
-			this.oRouter = oOwnerComponent.getRouter();
-			this.oModel = oOwnerComponent.getModel();
+			this.oRouter = this.oOwnerComponent.getRouter();
+			this.oModel = this.oOwnerComponent.getModel();
 
 			this.oRouter.getRoute("list").attachPatternMatched(this._onProductMatched, this);
 			this.oRouter.getRoute("detail").attachPatternMatched(this._onProductMatched, this);
