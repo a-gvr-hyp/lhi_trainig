@@ -6,8 +6,8 @@ service MotocycleService {
     function hello() returns String; //internal
     action helloAction() returns String; //external
 
-    function getMotocyclesByCompany(companyId: String) returns array of String;
-    action getMotocyclesByCompanyAction(companyId: String) returns array of String;
+    function getMotocyclesByCompany(companyId: String) returns array of Motocycle;
+    action getMotocyclesByCompanyAction(companyId: String) returns array of Motocycle;
 }
 
 

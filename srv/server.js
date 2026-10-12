@@ -1,6 +1,5 @@
 const cds = require("@sap/cds");
-const xsenv = require("@sap/xsenv");
-xsenv.loadEnv();
+// CAP loads default-env.json itself (cds.env), so @sap/xsenv is not needed
 cds.on('bootstrap', (app) => {
     //bleibt standard
 });
