@@ -1,49 +1,29 @@
 const cds = require("@sap/cds");
-module.exports = (srv) => {
 
-  srv.before("CREATE", "Motocycle", async (req) => {
-    var oData = req.data;
-    const dMotocicleDate = new Date(oData.jahr, 0, 1);
-    if (dMotocicleDate < new Date(2020, 0, 1)) {
-      oData.discount = 10;
-      oData.hasDiscount = true;
-    }
-    req.data = oData;
-  });
+class MotocycleService extends cds.ApplicationService {
+  init() {
+    const { Motocycle } = this.entities;
 
-  srv.after("READ", "Motocycle", async (req) => {
-    var aData = req;
-    for (let i = 0; i < aData.length; i++) {
-      var oData = aData[i];
-      if (oData.hasDiscount) {
-        oData.discountPrice = oData.preis - (oData.preis * oData.discount / 100);
-        aData[i] = oData;
-      } else {
-        oData.discountPrice = oData.preis;
-        aData[i] = oData;
+    // Motorcycles built before 2020 get a 10 % discount
+    this.before(["CREATE", "UPDATE"], Motocycle, (req) => {
+      const { jahr } = req.data;
+      if (jahr != null && jahr < 2020) {
+        req.data.discount = 10;
+        req.data.hasDiscount = true;
       }
-    }    
-  });
+    });
 
-  srv.on("hello", async (req) => {
-    return "Hello, World!";
-  });
+    this.on("hello", () => "Hello, World!"); //internal
+    this.on("helloAction", () => "Hello, World!"); //external
 
-  srv.on("getMotocyclesByCompany", async (req) => {
-    return await getMotocyclesByCompany(req.data.companyId);
-  });
-
-  //implementation for External Use
-  srv.on("getMotocyclesByCompanyAction", async (req) => {
-    return await getMotocyclesByCompany(req.data.companyId);
-    
-  });
-
-  async function getMotocyclesByCompany(companyId) {
-    const db = await cds.connect.to("db");
-    const result = await db.run(
-      SELECT.from("db.Motocycle").where({ company_ID: companyId })
+    // this.read() runs the query through this service, incl. its READ handlers
+    this.on(["getMotocyclesByCompany", "getMotocyclesByCompanyAction"], (req) =>
+      this.read(Motocycle).where({ company_ID: req.data.companyId })
     );
-    return result;
+
+    return super.init();
   }
 }
+
+// Services without an entry here (BestellungenService) use the generic default implementation
+module.exports = { MotocycleService };

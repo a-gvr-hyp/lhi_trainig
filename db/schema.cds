@@ -17,8 +17,8 @@ entity Kunden : primary {
 
 entity Bestellungen : primary {
   bestellungs_id: Int32;
-  bestell_datum: String;
-  gesamt_summe: Decimal;
+  bestell_datum: Date;
+  gesamt_summe: Decimal(9,2);
   kunde : Association to Kunden;
 }
 
@@ -39,5 +39,8 @@ entity Motocycle : primary {
   discount: Integer default 0;
   hasDiscount: Boolean default false;
   company : Association to Company;
-  virtual discountPrice: Decimal(9,2) @readonly;
+  // calculated on read by the database – works with $select, $filter and $orderby
+  discountPrice : Decimal(9,2) = case when hasDiscount = true
+                                      then preis * (100 - discount) / 100
+                                      else preis end;
 }
