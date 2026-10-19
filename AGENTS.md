@@ -73,7 +73,25 @@ All entities use the aspect `primary : cuid` (UUID key `ID`). Domain names are *
 | `Kunden` | `vorname`, `nachname`, `land : Country`, `stadt` |
 | `Bestellungen` | `bestellungs_id : Int32`, `bestell_datum : Date`, `gesamt_summe : Decimal(9,2)`, `kunde → Kunden` |
 | `Company` | `name`, `land : Country` |
-| `Motocycle` | `name`, `typ`, `hubraum`, `farbe`, `jahr`, `preis : Decimal(9,2)`, `discount` (percent), `hasDiscount`, `company → Company`, **`discountPrice`** (calculated, see below) |
+| `Motocycle` | `name`, `typ`, `hubraum`, `farbe`, `jahr`, `preis : Decimal(9,2)`, `discount` (percent), `hasDiscount`, `company → Company`, technical data (see below), **`discountPrice`** (calculated, see below) |
+
+`Motocycle` technical data (added 2026-10-12): `leistung_ps`, `leistung_kw`, `drehmoment_nm`, `zylinder`, `motorbauart`,
+`kuehlung`, `getriebe_gaenge`, `antrieb` (Kette/Kardan/Riemen), `gewicht_kg` (wet weight), `tankinhalt_l : Decimal(4,1)`, `sitzhoehe_mm`,
+`hoechstgeschwindigkeit_kmh`, `fuehrerscheinklasse` (A/A2/A1), `beschreibung` (German, 1–2 sentences), `quelle_url` (data source).
+
+### Initial data (`db/data/`)
+
+- **Company**: BMW `…042a`, Yamaha `…042b`, Ducati `…042c`, Honda `…042d`.
+- **Motocycle**: 28 rows.
+  - IDs `…0421`–`…0424` are the original training rows (GSA, Tenere, R1, Monster). Keep their first 10 columns unchanged, because exercises may reference them.
+  - IDs `…1001`–`…1024` are real models: BMW `1001–1008`, Honda `1009–1016`, Yamaha `1017–1024`. Each brand has 8 models covering the types ADV, Sport, Naked, Touring, Cruiser, Sport-Touring and Enduro, including at least 2 from before 2020.
+- **The CSV doesn't go through service handlers**, so CSV rows must follow the discount rule themselves: `jahr < 2020` → `discount 10, hasDiscount true`, otherwise `0, false`.
+- How the data was collected: researched on the web by AI agents (Oct 2026) and plausibility-checked (PS↔kW, ccm, licence class). It's teaching data, not an authoritative spec sheet:
+  - Prices are German list prices in EUR from different sources (some include delivery costs).
+  - `hoechstgeschwindigkeit_kmh` is empty for 5 models with no published value.
+  - About 10 colours are plausible but not confirmed by a source.
+  - Most `quelle_url` values point to motorradonline.de / motorradundreisen.de, because manufacturer sites couldn't be fetched.
+  - Monster (Ducati) has no technical data.
 
 `Motocycle` (without "r") is the established spelling for entities, services, URLs and app names. Don't "fix" it
 in only one place, because that would break CSV files, URLs and the apps.
@@ -89,7 +107,7 @@ Entities `Company`, `Motocycle` (projections on `db`).
 
 | Element | Kind | Behaviour |
 |---|---|---|
-| `discountPrice` | calculated element in CDS | `case when hasDiscount = true then preis * (100 - discount) / 100 else preis end`, computed **by the database** on read |
+| `discountPrice` | calculated element in CDS | `case when hasDiscount = true then preis * (100 - discount) / 100.0 else preis end`, computed **by the database** on read. Keep `100.0`: with `100`, SQLite does integer division (17675 → 15907 instead of 15907.5) |
 | before `CREATE`/`UPDATE` `Motocycle` | handler | if `jahr` is sent and `< 2020` → `discount = 10`, `hasDiscount = true` |
 | `hello()` | function (GET) | returns `"Hello, World!"` |
 | `helloAction()` | action (POST) | returns `"Hello, World!"` |
@@ -172,6 +190,14 @@ hello endpoints, both company endpoints, CREATE with `jahr` 2015 and PATCH `jahr
 HANA deployment note: `bestell_datum` changes from `NVARCHAR` to `DATE`. The existing values are ISO dates and the
 table is reloaded from CSV, so the HDI migration should work, but check it on the first deployment.
 
+### 2026-10-12 – motorcycle data enrichment
+
+- Added 15 technical fields to `Motocycle`, added Honda to `Company`, and grew `Motocycle` from 4 to 28 rows (see "Initial data").
+- How it was produced: an orchestrator agent coordinated two research agents (one for Honda + Yamaha, one for BMW) and a CSV writer agent.
+- Fixed integer division in `discountPrice` on SQLite (`/ 100` → `/ 100.0`).
+- Checked: HANA compile is clean, the CSV loads without errors, `$count` = 28, every `company` resolves, `discountPrice` is correct for all discounted rows (e.g. FZ1 10195 → 9175.5), `$filter` on new fields works, and `getMotocyclesByCompany` works for Honda.
+- The UI apps don't show the new fields yet (no annotations or views changed).
+
 ## Open issues (not fixed yet)
 
 1. **`@sap/xssec` missing**: production auth (`jwt`) needs it. `trainig-srv` will probably fail on CF.
@@ -184,6 +210,8 @@ table is reloaded from CSV, so the HDI migration should work, but check it on th
 4. **No authorization model**: add `@requires` / `@restrict` and matching role templates in `xs-security.json`.
 5. **Discount isn't removed** when `jahr` is updated to 2020 or later. Decide whether that is the intended business rule.
 6. `Kunden` CSV has no `land_code` column, so `land` is empty for all customers (data gap, not a bug).
+7. **New motorcycle fields aren't in the UIs**: add them to the `annotations.cds` of `motocycle_fiori` (e.g. a FieldGroup "Technische Daten") and to the freestyle views if needed.
+8. **WR125R is licence class `A1`**: the data allows A1 although the original spec only mentioned A/A2. Change it to `A2` if exercises expect only A/A2.
 
 ## Rules for agents and contributors
 
