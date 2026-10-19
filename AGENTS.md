@@ -131,6 +131,15 @@ module.exports = { MotocycleService };            // CAP picks the class by serv
 - `module.exports = { MotocycleService }`: CAP looks up `impl[serviceName]`. Services without an entry use the generic
   default implementation, which is how `BestellungenService` runs.
 - Use `this.read(...)` inside handlers so queries go through the service, not straight to `cds.db`.
+
+Input validation (`annotate MotocycleService.Motocycle` in `srv/cat-service.cds`,
+[CAP docs: Declarative Constraints](https://cap.cloud.sap/docs/guides/services/constraints)):
+- `@mandatory`: `name`, `typ`, `hubraum`. Only these three, because every existing Create dialog already sends them.
+- `@readonly`: `discount`, `hasDiscount`. Client values are silently dropped, but the before handler still sets them, because CAP's input cleansing runs before custom handlers.
+- `@assert.range` on all numeric fields, e.g. `zylinder [1, 8]`, `jahr [1900, 2100]`. `null` is allowed.
+- `@assert.format: '^https?://'` on `quelle_url`.
+- `discountPrice` is a calculated element, so it's dropped from any write automatically.
+- CSV loading bypasses these checks. Keep the CSV values inside the ranges.
 - Note on the discount rule: setting `jahr` to 2020 or later on UPDATE does **not** remove an existing discount.
 
 ### `BestellungenService` → `/odata/v4/bestellungen`
@@ -161,6 +170,37 @@ UI5 conventions for this project:
   added to `app/services.cds`. Prefer annotations over controller extensions.
 - Keep each app's `minUI5Version` in `manifest.json` consistent with the UI5 version in `ui5.yaml`.
 - Calculated or read-only fields such as `discountPrice` must be displayed, never edited.
+- Formatters go in `webapp/model/formatter.js` and are exposed on the controller as `formatter: formatter`
+  (UI5 walkthrough pattern), e.g. `{parts: [{path: 'detailModel>/hubraum'}, {value: 'ccm'}], formatter: '.formatter.withUnit'}`.
+- Put only Label/field pairs and `core:Title` inside a `SimpleForm`. A `MessageStrip` inside a SimpleForm makes the whole
+  app render blank **without any error in the console or the UI5 log**. Put hints in a `VBox` around the form instead.
+
+### `motocycle_smart_elements`: Detail and Edit pages
+
+Both pages are an ObjectPage with two tabs: "Motocycle Details" and "Technische Daten". Data is read via the OData V2
+model into a JSON model (`detailModel` / `updateModel`). Field classification (analysed by an agent against CAP 9.9.3 and the V2 adapter):
+
+| Field(s) | Edit page |
+|---|---|
+| `ID` | hidden (route parameter) |
+| `name`, `typ`, `company_ID`, `jahr`, `preis`, `hubraum` | editable, required (*) |
+| `farbe`, `motorbauart` | editable, ComboBox with suggestions (free text allowed) |
+| `typ`, `kuehlung`, `antrieb`, `fuehrerscheinklasse` | editable, Select with exactly the values that occur in the CSV |
+| other technical fields | editable, `Int32` / `Decimal` types (input validation in the UI); empty input → `null` |
+| `leistung_ps` **and** `leistung_kw` | both editable: they are published, rounded values and can't be converted reliably into each other |
+| `beschreibung` / `quelle_url` | TextArea maxLength 500 / Input type Url |
+| `discount`, `hasDiscount`, `discountPrice` | **read-only display** with a hint: set by the server based on `jahr` |
+
+`Update.controller.js` sends only `EDITABLE_FIELDS`, not the whole JSON model. Before saving it checks
+`REQUIRED_FIELDS` and the input validation errors from `sap/ui/core/Messaging`, counting only messages attached to a
+control (server errors from earlier saves must not block). Server validation messages (e.g. `@assert.range`) are shown in a `MessageBox`.
+
+Checked in headless Chrome against the local server:
+- Both pages render.
+- A type error blocks saving.
+- An empty required field blocks saving.
+- `zylinder = 12` shows the server message "Enter a value between 1 and 8."
+- A valid save stores the values and `null` for cleared fields, leaves the discount untouched, and navigates back.
 
 ## Auth and deployment
 
@@ -198,6 +238,16 @@ table is reloaded from CSV, so the HDI migration should work, but check it on th
 - Checked: HANA compile is clean, the CSV loads without errors, `$count` = 28, every `company` resolves, `discountPrice` is correct for all discounted rows (e.g. FZ1 10195 → 9175.5), `$filter` on new fields works, and `getMotocyclesByCompany` works for Honda.
 - The UI apps don't show the new fields yet (no annotations or views changed).
 
+### 2026-10-19 – technical data in `motocycle_smart_elements`
+
+- Detail view: new tab "Technische Daten" (Motor & Antrieb, Gewicht & Abmessungen, Allgemein) with `model/formatter.js`.
+  The source URL is shown as a link.
+- Edit view: rebuilt from the field classification above (typed inputs, Selects with the real values, read-only discount group).
+- Fixed the `typ` ComboBox, which offered keys that don't exist in the data (`SPORT`, `CHOPPER`).
+- Edit controller: sends only editable fields, shows server errors, and no longer uses globals (`sap.m.MessageToast`, `sap.ui.model.json.JSONModel`).
+- Removed template leftovers: the "Address" form title and `beforeNavigate=".onBeforeNavigate"`, which had no handler.
+- Server: `@mandatory`, `@readonly`, `@assert.range` and `@assert.format` on `MotocycleService.Motocycle`.
+
 ## Open issues (not fixed yet)
 
 1. **`@sap/xssec` missing**: production auth (`jwt`) needs it. `trainig-srv` will probably fail on CF.
@@ -210,8 +260,17 @@ table is reloaded from CSV, so the HDI migration should work, but check it on th
 4. **No authorization model**: add `@requires` / `@restrict` and matching role templates in `xs-security.json`.
 5. **Discount isn't removed** when `jahr` is updated to 2020 or later. Decide whether that is the intended business rule.
 6. `Kunden` CSV has no `land_code` column, so `land` is empty for all customers (data gap, not a bug).
-7. **New motorcycle fields aren't in the UIs**: add them to the `annotations.cds` of `motocycle_fiori` (e.g. a FieldGroup "Technische Daten") and to the freestyle views if needed.
+7. **New motorcycle fields are only in `motocycle_smart_elements` (Detail + Edit)**: still missing in `motocycle_fiori`
+   (e.g. a FieldGroup "Technische Daten" in its `annotations.cds`), `motocycle_freestyle` and `motocycle_fcl`.
 8. **WR125R is licence class `A1`**: the data allows A1 although the original spec only mentioned A/A2. Change it to `A2` if exercises expect only A/A2.
+9. **`typ` keys in other Create/Update dialogs**: `motocycle_freestyle` (Create/Update) and the smart elements Create
+   view use `SPORT` / `CHOPPER`, which don't match the data (`Sport`, `Cruiser`, …). Planned server-side fix once the
+   UIs are aligned: `typ : String @assert.range enum { ADV; Sport; Naked; Touring; Cruiser; SportTouring = 'Sport-Touring'; Enduro; }`
+   in `db/schema.cds` (an enum can't be added via `annotate`).
+10. **`@mandatory` for `jahr`, `preis`, `company`** isn't on the server yet: the Create dialogs of `motocycle_fiori` and others
+    don't send these fields. Add the fields to those dialogs first, then add the annotations.
+11. `motocycle_smart_elements/webapp/controller/Create.controller.js` uses `Fragment`, `Filter`, `FilterOperator` without
+    importing them, so the value help crashes. The Create view isn't extended with the technical fields yet.
 
 ## Rules for agents and contributors
 

@@ -2,11 +2,16 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/routing/History",
     "sap/ui/core/UIComponent",
-    "sap/m/MessageBox"
-], function (Controller, History, UIComponent, MessageBox) {
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageBox",
+    "sap/m/MessageToast",
+    "../model/formatter"
+], function (Controller, History, UIComponent, JSONModel, MessageBox, MessageToast, formatter) {
     "use strict";
 
     const Detail = Controller.extend("motocyclesmartelements.controller.Detail", {
+
+        formatter: formatter,
 
         onInit() {
             const router = UIComponent.getRouterFor(this);
@@ -18,7 +23,7 @@ sap.ui.define([
             const oModel = this.getOwnerComponent().getModel();
             oModel.read("/Motocycle(guid'" + motocycleId + "')", {
                 success: (oData) => {
-                    const oDetailModel = new sap.ui.model.json.JSONModel(oData);
+                    const oDetailModel = new JSONModel(oData);
                     this.getView().setModel(oDetailModel, "detailModel");
                 },
                 error: (oError) => {
@@ -48,12 +53,12 @@ sap.ui.define([
                         const motocycleId = this.getView().getModel("detailModel").getProperty("/ID");
                         oModel.remove("/Motocycle(guid'" + motocycleId + "')", {
                             success: () => {
-                                sap.m.MessageToast.show("Motocycle deleted successfully");
+                                MessageToast.show("Motocycle deleted successfully");
                                 this.onNavBack();
                             },
                             error: (oError) => {
                                 console.error("Error deleting motocycle", oError);
-                                sap.m.MessageToast.show("Error deleting motocycle");
+                                MessageToast.show("Error deleting motocycle");
                             }
                         });
                     }

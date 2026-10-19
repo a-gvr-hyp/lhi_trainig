@@ -5,10 +5,13 @@
 	xmlns:layout="sap.ui.layout"
 	xmlns:m="sap.m"
     xmlns:core="sap.ui.core"
-	xmlns:f="sap.ui.layout.form">
+	xmlns:f="sap.ui.layout.form"
+	core:require="{
+		Int32: 'sap/ui/model/odata/type/Int32',
+		Decimal: 'sap/ui/model/odata/type/Decimal'
+	}">
 	<ObjectPageLayout id="ObjectPageLayoutUpdate"
 		enableLazyLoading="true"
-		beforeNavigate=".onBeforeNavigate"
 		useIconTabBar="true"
 		showTitleInHeaderContent="true"
 		upperCaseAnchorBar="false">
@@ -49,36 +52,141 @@
 				<subSections>
 					<ObjectPageSubSection title="{i18n>detailPageSubSectionDetailsTitle}" titleUppercase="false">
 						<blocks>
-							<f:SimpleForm
-								editable="false"
-								layout="ResponsiveGridLayout"
-								title="Address"
-								labelSpanXL="3"
-								labelSpanL="3"
-								labelSpanM="3"
-								labelSpanS="12"
-								adjustLabelSpan="false"
-								emptySpanXL="4"
-								emptySpanL="4"
-								emptySpanM="4"
-								emptySpanS="0"
-								columnsXL="1"
-								columnsL="1"
-								columnsM="1"
-								singleContainerFullSize="false" >
+							<!-- one block: hint above the form (a SimpleForm itself only takes Label/field pairs) -->
+							<m:VBox>
+							<m:MessageStrip text="{i18n>discountInfoText}" type="Information" showIcon="true" class="sapUiSmallMarginBottom" />
+							<f:SimpleForm id="masterDataFormUpdate"
+								editable="true"
+								layout="ColumnLayout"
+								columnsM="2"
+								columnsL="2"
+								columnsXL="2">
 								<f:content>
-									<m:Label text="Name" />
-									<m:Input value="{updateModel>/name}" />
-									<m:Label text="Typ" />
-									<m:ComboBox id="sTypUpdate" selectedKey="{updateModel>/typ}">
-                                        <core:Item key="ADV" text="ADV" />
-                                        <core:Item key="SPORT" text="Sport" />
-                                        <core:Item key="CHOPPER" text="Chopper" />
-                                    </m:ComboBox>
-									<m:Label text="Farbe" />
-									<m:Input value="{updateModel>/farbe}" />
-									<m:Label text="Hubraum" />
-									<m:Input value="{updateModel>/hubraum}" />
+									<!-- editable master data -->
+									<core:Title text="{i18n>masterDataTitle}" />
+									<m:Label text="{i18n>nameLabel}" required="true" />
+									<m:Input value="{updateModel>/name}" maxLength="100" />
+									<m:Label text="{i18n>typLabel}" required="true" />
+									<m:Select id="sTypUpdate" selectedKey="{updateModel>/typ}" forceSelection="false">
+										<core:Item key="ADV" text="ADV" />
+										<core:Item key="Sport" text="Sport" />
+										<core:Item key="Naked" text="Naked" />
+										<core:Item key="Touring" text="Touring" />
+										<core:Item key="Sport-Touring" text="Sport-Touring" />
+										<core:Item key="Cruiser" text="Cruiser" />
+										<core:Item key="Enduro" text="Enduro" />
+									</m:Select>
+									<m:Label text="{i18n>companyLabel}" required="true" />
+									<m:Select id="sCompanyUpdate"
+										selectedKey="{updateModel>/company_ID}"
+										forceSelection="false"
+										items="{path: '/Company', sorter: {path: 'name'}}">
+										<core:Item key="{ID}" text="{name}" />
+									</m:Select>
+									<m:Label text="{i18n>farbeLabel}" />
+									<m:ComboBox value="{updateModel>/farbe}">
+										<core:Item key="Blau" text="Blau" />
+										<core:Item key="Grau" text="Grau" />
+										<core:Item key="Rot" text="Rot" />
+										<core:Item key="Schwarz" text="Schwarz" />
+										<core:Item key="Weiß" text="Weiß" />
+									</m:ComboBox>
+									<m:Label text="{i18n>baujahrLabel}" required="true" />
+									<m:Input value="{path: 'updateModel>/jahr', type: 'Int32', formatOptions: {groupingEnabled: false}}" />
+									<m:Label text="{i18n>preisLabel}" required="true" />
+									<m:Input value="{path: 'updateModel>/preis', type: 'Decimal', constraints: {precision: 9, scale: 2, minimum: '0'}}"
+										description="EUR" />
+
+									<!-- read-only: set by the server (before CREATE/UPDATE handler + calculated element) -->
+									<core:Title text="{i18n>discountGroupTitle}" />
+									<m:Label text="{i18n>discountLabel}" />
+									<m:ObjectNumber number="{updateModel>/discount}" unit="%" />
+									<m:Label text="{i18n>hasDiscountLabel}" />
+									<m:ObjectStatus
+										text="{= ${updateModel>/hasDiscount} ? ${i18n>yesText} : ${i18n>noText} }"
+										icon="{= ${updateModel>/hasDiscount} ? 'sap-icon://accept' : 'sap-icon://decline' }"
+										state="{= ${updateModel>/hasDiscount} ? 'Success' : 'None' }" />
+									<m:Label text="{i18n>discountPriceLabel}" />
+									<m:ObjectNumber
+										number="{path: 'updateModel>/discountPrice', type: 'Decimal', constraints: {scale: 2}}"
+										unit="EUR" />
+								</f:content>
+							</f:SimpleForm>
+							</m:VBox>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+
+			<ObjectPageSection titleUppercase="false" title="{i18n>technicalDataSectionTitle}">
+				<subSections>
+					<ObjectPageSubSection title="{i18n>technicalDataSectionTitle}" titleUppercase="false">
+						<blocks>
+							<f:SimpleForm id="technicalDataFormUpdate"
+								editable="true"
+								layout="ColumnLayout"
+								columnsM="2"
+								columnsL="3"
+								columnsXL="3">
+								<f:content>
+									<core:Title text="{i18n>engineGroupTitle}" />
+									<m:Label text="{i18n>motorbauartLabel}" />
+									<m:ComboBox value="{updateModel>/motorbauart}">
+										<core:Item key="Boxer" text="Boxer" />
+										<core:Item key="Einzylinder" text="Einzylinder" />
+										<core:Item key="Parallel-Twin" text="Parallel-Twin" />
+										<core:Item key="Reihe" text="Reihe" />
+										<core:Item key="V" text="V" />
+									</m:ComboBox>
+									<m:Label text="{i18n>zylinderLabel}" />
+									<m:Input value="{path: 'updateModel>/zylinder', type: 'Int32'}" />
+									<m:Label text="{i18n>hubraumLabel}" required="true" />
+									<m:Input value="{path: 'updateModel>/hubraum', type: 'Int32', formatOptions: {groupingEnabled: false}}" description="ccm" />
+									<m:Label text="{i18n>leistungPsLabel}" />
+									<m:Input value="{path: 'updateModel>/leistung_ps', type: 'Int32'}" description="PS" />
+									<m:Label text="{i18n>leistungKwLabel}" />
+									<m:Input value="{path: 'updateModel>/leistung_kw', type: 'Int32'}" description="kW" />
+									<m:Label text="{i18n>drehmomentLabel}" />
+									<m:Input value="{path: 'updateModel>/drehmoment_nm', type: 'Int32'}" description="Nm" />
+									<m:Label text="{i18n>kuehlungLabel}" />
+									<m:Select selectedKey="{updateModel>/kuehlung}" forceSelection="false">
+										<core:Item key="" text="" />
+										<core:Item key="Wasser" text="Wasser" />
+										<core:Item key="Luft/Öl" text="Luft/Öl" />
+										<core:Item key="Luft" text="Luft" />
+									</m:Select>
+									<m:Label text="{i18n>getriebeLabel}" />
+									<m:Input value="{path: 'updateModel>/getriebe_gaenge', type: 'Int32'}" description="{i18n>gaengeUnit}" />
+									<m:Label text="{i18n>antriebLabel}" />
+									<m:Select selectedKey="{updateModel>/antrieb}" forceSelection="false">
+										<core:Item key="" text="" />
+										<core:Item key="Kette" text="Kette" />
+										<core:Item key="Kardan" text="Kardan" />
+										<core:Item key="Riemen" text="Riemen" />
+									</m:Select>
+
+									<core:Title text="{i18n>chassisGroupTitle}" />
+									<m:Label text="{i18n>gewichtLabel}" />
+									<m:Input value="{path: 'updateModel>/gewicht_kg', type: 'Int32'}" description="kg" />
+									<m:Label text="{i18n>tankinhaltLabel}" />
+									<m:Input value="{path: 'updateModel>/tankinhalt_l', type: 'Decimal', constraints: {precision: 4, scale: 1, minimum: '0'}}" description="l" />
+									<m:Label text="{i18n>sitzhoeheLabel}" />
+									<m:Input value="{path: 'updateModel>/sitzhoehe_mm', type: 'Int32'}" description="mm" />
+									<m:Label text="{i18n>hoechstgeschwindigkeitLabel}" />
+									<m:Input value="{path: 'updateModel>/hoechstgeschwindigkeit_kmh', type: 'Int32'}" description="km/h" />
+
+									<core:Title text="{i18n>generalGroupTitle}" />
+									<m:Label text="{i18n>fuehrerscheinklasseLabel}" />
+									<m:Select selectedKey="{updateModel>/fuehrerscheinklasse}" forceSelection="false">
+										<core:Item key="" text="" />
+										<core:Item key="A" text="A" />
+										<core:Item key="A2" text="A2" />
+										<core:Item key="A1" text="A1" />
+									</m:Select>
+									<m:Label text="{i18n>beschreibungLabel}" />
+									<m:TextArea value="{updateModel>/beschreibung}" maxLength="500" rows="3" growing="true" />
+									<m:Label text="{i18n>quelleLabel}" />
+									<m:Input value="{updateModel>/quelle_url}" type="Url" maxLength="500" placeholder="https://" />
 								</f:content>
 							</f:SimpleForm>
 						</blocks>

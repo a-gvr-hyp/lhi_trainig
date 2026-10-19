@@ -4,10 +4,10 @@
 	xmlns="sap.uxap"
 	xmlns:layout="sap.ui.layout"
 	xmlns:m="sap.m"
+	xmlns:core="sap.ui.core"
 	xmlns:f="sap.ui.layout.form">
 	<ObjectPageLayout id="ObjectPageLayout"
 		enableLazyLoading="true"
-		beforeNavigate=".onBeforeNavigate"
 		useIconTabBar="true"
 		showTitleInHeaderContent="true"
 		upperCaseAnchorBar="false">
@@ -51,7 +51,7 @@
 							<f:SimpleForm id="SimpleFormDisplay354"
 								editable="false"
 								layout="ResponsiveGridLayout"
-								title="Address"
+								title="{i18n>masterDataTitle}"
 								labelSpanXL="3"
 								labelSpanL="3"
 								labelSpanM="3"
@@ -76,6 +76,65 @@
 									<m:Text id="countryText" text="{detailModel>/hubraum}" />
 									<m:Label text="Discounted Price" />
 									<m:Text id="discountPriceText" text="{detailModel>/discountPrice}" />
+								</f:content>
+							</f:SimpleForm>
+						</blocks>
+					</ObjectPageSubSection>
+				</subSections>
+			</ObjectPageSection>
+
+			<ObjectPageSection titleUppercase="false" title="{i18n>technicalDataSectionTitle}">
+				<subSections>
+					<ObjectPageSubSection title="{i18n>technicalDataSectionTitle}" titleUppercase="false">
+						<blocks>
+							<f:SimpleForm id="technicalDataForm"
+								editable="false"
+								layout="ColumnLayout"
+								columnsM="2"
+								columnsL="3"
+								columnsXL="3">
+								<f:content>
+									<core:Title text="{i18n>engineGroupTitle}" />
+									<m:Label text="{i18n>motorbauartLabel}" />
+									<m:Text text="{path: 'detailModel>/motorbauart', formatter: '.formatter.text'}" />
+									<m:Label text="{i18n>zylinderLabel}" />
+									<m:Text text="{path: 'detailModel>/zylinder', formatter: '.formatter.text'}" />
+									<m:Label text="{i18n>hubraumLabel}" />
+									<m:Text text="{parts: [{path: 'detailModel>/hubraum'}, {value: 'ccm'}], formatter: '.formatter.withUnit'}" />
+									<m:Label text="{i18n>leistungLabel}" />
+									<m:Text text="{parts: [{path: 'detailModel>/leistung_ps'}, {path: 'detailModel>/leistung_kw'}], formatter: '.formatter.power'}" />
+									<m:Label text="{i18n>drehmomentLabel}" />
+									<m:Text text="{parts: [{path: 'detailModel>/drehmoment_nm'}, {value: 'Nm'}], formatter: '.formatter.withUnit'}" />
+									<m:Label text="{i18n>kuehlungLabel}" />
+									<m:Text text="{path: 'detailModel>/kuehlung', formatter: '.formatter.text'}" />
+									<m:Label text="{i18n>getriebeLabel}" />
+									<m:Text text="{parts: [{path: 'detailModel>/getriebe_gaenge'}, {path: 'i18n>gaengeUnit'}], formatter: '.formatter.withUnit'}" />
+									<m:Label text="{i18n>antriebLabel}" />
+									<m:Text text="{path: 'detailModel>/antrieb', formatter: '.formatter.text'}" />
+
+									<core:Title text="{i18n>chassisGroupTitle}" />
+									<m:Label text="{i18n>gewichtLabel}" />
+									<m:Text text="{parts: [{path: 'detailModel>/gewicht_kg'}, {value: 'kg'}], formatter: '.formatter.withUnit'}" />
+									<m:Label text="{i18n>tankinhaltLabel}" />
+									<m:Text text="{parts: [{path: 'detailModel>/tankinhalt_l'}, {value: 'l'}], formatter: '.formatter.withUnit'}" />
+									<m:Label text="{i18n>sitzhoeheLabel}" />
+									<m:Text text="{parts: [{path: 'detailModel>/sitzhoehe_mm'}, {value: 'mm'}], formatter: '.formatter.withUnit'}" />
+									<m:Label text="{i18n>hoechstgeschwindigkeitLabel}" />
+									<m:Text text="{parts: [{path: 'detailModel>/hoechstgeschwindigkeit_kmh'}, {value: 'km/h'}], formatter: '.formatter.withUnit'}" />
+
+									<core:Title text="{i18n>generalGroupTitle}" />
+									<m:Label text="{i18n>baujahrLabel}" />
+									<m:Text text="{path: 'detailModel>/jahr', formatter: '.formatter.text'}" />
+									<m:Label text="{i18n>fuehrerscheinklasseLabel}" />
+									<m:Text text="{path: 'detailModel>/fuehrerscheinklasse', formatter: '.formatter.text'}" />
+									<m:Label text="{i18n>beschreibungLabel}" />
+									<m:Text text="{path: 'detailModel>/beschreibung', formatter: '.formatter.text'}" />
+									<m:Label text="{i18n>quelleLabel}" />
+									<m:Link text="{path: 'detailModel>/quelle_url', formatter: '.formatter.text'}"
+										href="{detailModel>/quelle_url}"
+										target="_blank"
+										wrapping="true"
+										enabled="{= !!${detailModel>/quelle_url} }" />
 								</f:content>
 							</f:SimpleForm>
 						</blocks>
