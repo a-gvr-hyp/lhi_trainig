@@ -1,5 +1,3 @@
-const { string } = require("@sap/cds/lib/core/classes");
-
 sap.ui.define([], () => {
 	"use strict";
 

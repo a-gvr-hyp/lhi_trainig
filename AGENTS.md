@@ -29,24 +29,23 @@ Useful CAP chapters: [CDS language](https://cap.cloud.sap/docs/cds/cdl) ·
 | Layer | Technology |
 |---|---|
 | Backend | CAP Node.js, `@sap/cds` 9 (`srv/`) |
-| DB (production) | SAP HANA Cloud via `@cap-js/hana` (HDI container `trainig-db`) |
-| DB (local dev) | SQLite in-memory via `@cap-js/sqlite`, filled from CSV in `db/data/` |
+| DB (local **and** BTP) | SQLite in-memory via `@cap-js/sqlite`, filled from CSV in `db/data/` at every start. No HANA Cloud (see "Auth and deployment") |
 | Protocols | OData V4 (`/odata/v4/...`) + OData V2 via `@cap-js-community/odata-v2-adapter` (`/odata/v2/...`) |
 | Frontend | SAPUI5 – Fiori elements (List Report / Object Page) and freestyle apps in `app/` |
 | Deployment | MTA (`mta.yaml`) to SAP BTP Cloud Foundry: XSUAA, HTML5 repo, destination service |
 
-No `cds` configuration in `package.json` (`"cds": {}`). CAP defaults apply:
-SQLite + mocked auth in development, HANA + `jwt` (XSUAA) auth in production.
+`cds` configuration in `package.json`: `requires.db` is in-memory SQLite for all profiles, and `[production].features.in_memory_db`
+turns on CAP's deploy-at-startup, which is off in production by default. Auth uses CAP defaults: mocked in development, `jwt` (XSUAA) in production.
 
 ## Project layout
 
 ```
 db/schema.cds            data model (namespace db)
 db/data/db-<Entity>.csv  initial data (file name = <namespace>-<Entity>.csv)
-db/undeploy.json         HDI undeploy list
+db/undeploy.json         HDI undeploy list (unused without HANA)
 srv/cat-service.cds      MotocycleService + BestellungenService
 srv/cat-service.js       implementation of MotocycleService (class-based)
-srv/server.js            custom server.js (empty bootstrap hook, kept as a teaching skeleton)
+srv/server.js            custom server.js (development only: maps <app>/odata/... to /odata/... like the approuter does on BTP)
 app/<app>/               UI5 apps, each with its own annotations.cds, manifest.json, ui5.yaml
 app/services.cds         pulls the apps' annotations.cds into the model
 mta.yaml, xs-security.json   BTP deployment and XSUAA config
@@ -55,11 +54,11 @@ mta.yaml, xs-security.json   BTP deployment and XSUAA config
 ## Commands
 
 ```bash
-npm install --no-package-lock   # see "Open issues": npm ci fails at the moment
+npm ci                           # install exactly what package-lock.json pins
 cds watch                        # http://localhost:4004, SQLite in-memory + CSV, mocked users (alice, bob, ...)
 npm run watch-motocycle_fcl      # starts cds watch and opens one specific app (see package.json scripts)
 cds compile db srv --to sql --dialect hana   # check the HANA DDL without deploying
-npm run build && npm run deploy  # mbt build + cf deploy
+npm run build && npm run deploy  # mbt build + cf deploy (cf login first)
 ```
 
 Local requests need a mocked user, e.g. `curl -u alice: http://localhost:4004/odata/v4/motocycle/Motocycle`.
@@ -205,9 +204,24 @@ Checked in headless Chrome against the local server:
 ## Auth and deployment
 
 - Local: mocked auth, any mocked user (e.g. `alice:`) is accepted.
-- Production: `cds.requires.auth.kind = jwt` with the XSUAA instance `trainig-xsuaa-service` (`xs-security.json`, scope `uaa.user`).
+- Production: `cds.requires.auth.kind = jwt` with the XSUAA instance `trainig-xsuaa-service` (`xs-security.json`, scope `uaa.user`). Needs `@sap/xssec`.
 - Services have **no** `@requires` / `@restrict` yet, so every authenticated user has full CRUD access.
 - The app router config (`xs-app.json` per app) routes through the HTML5 repo and requires `xsuaa` authentication.
+  `^/?odata/(.*)$` goes to the `srv-api` destination.
+
+### Deployment without HANA Cloud
+
+The MTA deploys the CAP service, the HTML5 apps, XSUAA and the destination service. There is no HDI container and no DB deployer.
+
+- **Data lives in memory.** Every restart, restage or crash of `trainig-srv` resets the database to the CSV content; all edits are lost.
+- **Keep `instances: 1`.** Each instance would have its own separate database.
+- `cds build` packages CSV files only for HANA, so the `before-all` step `npm run build:csv` copies `db/data` to `gen/srv/db/data`.
+- `node_modules/` is excluded from the archive (`ignore` in `mta.yaml`) so Cloud Foundry installs the Linux build of `better-sqlite3`.
+- Service URLs in `manifest.json` must stay **relative** (`odata/v4/...`). A leading `/` bypasses the app's routes on BTP.
+- Every deployed app's `xs-app.json` needs the `odata` route **before** the catch-all route.
+
+To go back to HANA Cloud: restore `@cap-js/hana` in `package.json`, remove `requires.db` and `[production]` from `cds`,
+re-add the `trainig-db` resource and `trainig-db-deployer` module in `mta.yaml`, and remove the `build:csv` step.
 
 ## Change log
 
@@ -248,14 +262,20 @@ table is reloaded from CSV, so the HDI migration should work, but check it on th
 - Removed template leftovers: the "Address" form title and `beforeNavigate=".onBeforeNavigate"`, which had no handler.
 - Server: `@mandatory`, `@readonly`, `@assert.range` and `@assert.format` on `MotocycleService.Motocycle`.
 
+### 2026-11-09 – deployable on BTP without HANA Cloud
+
+- Database switched to in-memory SQLite with CSV data, also in production. HANA removed from `package.json` and `mta.yaml`.
+- Added the missing `@sap/xssec` (open issue 1) and repaired `package-lock.json` (open issue 2: stale link to `app/motorcycle_fcl`).
+- Five apps had no working backend connection on BTP: URIs were absolute, and four had no `odata` route. Both fixed. `srv/server.js` keeps `cds watch` working with the relative URIs.
+- Removed a stray `require("@sap/cds/...")` from `motocycle_freestyle/webapp/model/formatter.js`, which broke its bundling.
+- Checked: `mbt build` runs without errors. The archive's service was installed clean and started with `NODE_ENV=production`: 28 motorcycles load from CSV, anonymous requests get 401 (simulated XSUAA binding), reads, creates and OData V2 work. All five apps load in headless Chrome with no failed OData calls under local `cds serve`.
+- **Not yet deployed to a real BTP subaccount.** Open points there: installing `better-sqlite3` on Cloud Foundry, and the real login through XSUAA.
+
 ## Open issues (not fixed yet)
 
-1. **`@sap/xssec` missing**: production auth (`jwt`) needs it. `trainig-srv` will probably fail on CF.
-   Fix: `npm add @sap/xssec` (or `cds add xsuaa`).
-2. **`npm ci` fails**: `package-lock.json` is out of sync with the workspaces. The probable cause is the extra
-   `app/motorcycle_fcl` folder. The MTA builder `npm-ci` is affected too. Fix: decide what to do with
-   `app/motorcycle_fcl` (it duplicates `motocycle_fcl`, isn't deployed and has no annotations import), then regenerate the lockfile.
-3. **`book` app is orphaned**: it points to `/odata/v4/catalog/` and annotates `CatalogService.Books`, but neither exists.
+1. *(fixed 2026-11-09: `@sap/xssec` added)*
+2. **`app/motorcycle_fcl` is a leftover**: it duplicates `motocycle_fcl`, isn't deployed and has no annotations import. It no longer breaks `npm ci`; decide whether to delete it.
+3. **`book` app is orphaned**: it points to `/odata/v4/catalog/` and annotates `CatalogService.Books`, but neither exists. It is still deployed and won't show data.
    Either remove the app (folder, `mta.yaml` module, `app/services.cds` line, `sapux` entry) or add the service.
 4. **No authorization model**: add `@requires` / `@restrict` and matching role templates in `xs-security.json`.
 5. **Discount isn't removed** when `jahr` is updated to 2020 or later. Decide whether that is the intended business rule.
@@ -271,6 +291,7 @@ table is reloaded from CSV, so the HDI migration should work, but check it on th
     don't send these fields. Add the fields to those dialogs first, then add the annotations.
 11. `motocycle_smart_elements/webapp/controller/Create.controller.js` uses `Fragment`, `Filter`, `FilterOperator` without
     importing them, so the value help crashes. The Create view isn't extended with the technical fields yet.
+12. `motocycle_fcl` logs `TypeError: Cannot read properties of null (reading 'byId')` when it starts. The page still renders.
 
 ## Rules for agents and contributors
 

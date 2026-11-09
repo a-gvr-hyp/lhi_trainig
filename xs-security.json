@@ -4,16 +4,82 @@
   "description": "Security profile of called application",
   "scopes": [
     {
-      "name": "uaa.user",
+      "name": "Moto.Read",
+      "description": "UAA"
+    },
+    {
+      "name": "Moto.Create",
+      "description": "UAA"
+    },
+    {
+      "name": "Moto.Update",
+      "description": "UAA"
+    },
+    {
+      "name": "Moto.Delete",
+      "description": "UAA"
+    },
+    {
+      "name": "Company.Read",
+      "description": "UAA"
+    },
+    {
+      "name": "Company.Create",
+      "description": "UAA"
+    },
+    {
+      "name": "Company.Update",
+      "description": "UAA"
+    },
+    {
+      "name": "Company.Delete",
       "description": "UAA"
     }
   ],
   "role-templates": [
     {
-      "name": "Token_Exchange",
+      "name": "Moto.Admin",
       "description": "UAA",
       "scope-references": [
-        "uaa.user"
+        "Moto.Read",
+        "Moto.Update",
+        "Moto.Create",
+        "Moto.Delete"
+      ]
+    },
+    {
+      "name": "Moto.Verkauf",
+      "description": "UAA",
+      "scope-references": [
+        "Moto.Read",
+        "Moto.Update",
+        "Moto.Create"
+      ]
+    },
+    {
+      "name": "Moto.User",
+      "description": "UAA",
+      "scope-references": [
+        "Moto.Read"
+      ]
+    },
+    {
+      "name": "Company.Admin",
+      "description": "UAA",
+      "scope-references": [
+        "Company.Read",
+        "Company.Update",
+        "Company.Create",
+        "Company.Delete"
+      ]
+    },
+    {
+      "name": "Company.Manager",
+      "description": "UAA",
+      "scope-references": [
+        "Company.Read",
+        "Company.Update",
+        "Company.Create"
       ]
     }
   ]

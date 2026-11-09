@@ -7,7 +7,6 @@ modules:
   type: nodejs
   path: gen/srv
   requires:
-  - name: trainig-db
   - name: uaa_trainig
   provides:
   - name: srv-api
@@ -18,13 +17,8 @@ modules:
     instances: 1
   build-parameters:
     builder: npm-ci
-- name: trainig-db-deployer
-  type: hdb
-  path: gen/db
-  requires:
-  - name: trainig-db
-  parameters:
-    buildpack: nodejs_buildpack
+    ignore:
+    - node_modules/
 - name: trainig-destination-content
   type: com.sap.application.content
   requires:
@@ -150,11 +144,6 @@ modules:
     - npm run build:cf
     supported-platforms: []
 resources:
-- name: trainig-db
-  type: com.sap.xs.hdi-container
-  parameters:
-    service: hana
-    service-plan: hdi-shared
 - name: trainig-destination-service
   type: org.cloudfoundry.managed-service
   parameters:
@@ -204,3 +193,4 @@ build-parameters:
     commands:
     - npm ci
     - npx cds build --production
+    - npm run build:csv

@@ -14,6 +14,8 @@ target/
 .gen/
 
 # MTA
+/resources/
+app/*/dist/
 *_mta_build_tmp
 *.mtar
 mta_archives/

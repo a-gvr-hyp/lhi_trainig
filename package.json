@@ -4,12 +4,12 @@
   "description": "A simple CAP project.",
   "dependencies": {
     "@cap-js-community/odata-v2-adapter": "^1.15.12",
-    "@cap-js/hana": "^2",
+    "@cap-js/sqlite": "^2",
     "@sap/cds": "^9",
+    "@sap/xssec": "^4",
     "express": "^4"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^2",
     "@sap/cds-dk": "^9",
     "cds-plugin-ui5": "0.13.6",
     "mbt": "^1.2.29",
@@ -20,6 +20,7 @@
     "watch-book": "cds watch --open book/index.html?sap-ui-xx-viewCache=false --livereload false",
     "undeploy": "cf undeploy trainig --delete-services --delete-service-keys --delete-service-brokers",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "build:csv": "node -e \"require('fs').cpSync('db/data','gen/srv/db/data',{recursive:true})\"",
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
     "watch-motocycle_fiori": "cds watch --open motocyclefiori/index.html?sap-ui-xx-viewCache=false --livereload false",
     "watch-motocycle_freestyle": "cds watch --open motocyclefreestyle/index.html?sap-ui-xx-viewCache=false --livereload false",
@@ -28,7 +29,21 @@
     "watch-bestellungen_fiori": "cds watch --open bestellungenfiori/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
-  "cds": {},
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "url": ":memory:"
+        }
+      }
+    },
+    "[production]": {
+      "features": {
+        "in_memory_db": true
+      }
+    }
+  },
   "workspaces": [
     "app/*"
   ],
